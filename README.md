@@ -31,14 +31,14 @@
 
 
 
-# Server端
+# Asterisk
 - 环境: 阿里云 ubuntu 16.04
 
 ## 安装
 - `apt install asterisk`
 
 ## 修改配置文件
-- /etc/asterisk/sip.conf
+- `/etc/asterisk/sip.conf`
 ```
 [general]
 externip = 120.78.218.59
@@ -93,3 +93,23 @@ exten => 1002,n,Hangup
 
 - **注意**: 由于我的阿里云服务器是公网IP, 因此如要修改一下NAT配置。虽然asterisk使用SIP协议建立连接, 但是语音数据包走的还是RTP协议, 因此需要将阿里云的SIP(默认:5060)端口和RTP(默认:10000~20000)端口都开启, 否则会没油声音。
 
+
+<!-- # OpenSips
+- 版本: http://download.opensips.org/opensips-2.4.5.tar.gz2.4.5
+
+## 依赖
+- `apt install bison`
+- `apt install flex`
+- `apt install libxml2`
+- `apt install libxml2-dev`
+- `apt install mysql-server`
+- `apt install libmysqlclient-dev` 
+- `apt-get install libncurses5-dev`
+
+## 安装
+- `wget http://download.opensips.org/opensips-2.4.5.tar.gz`
+- `tar zxf opensips-3.0.0.tar.gz`
+- `cd opensips-3.0.0`
+- `make menuconfig`
+- 选中`db_mysql`
+- Compiler and Install -->

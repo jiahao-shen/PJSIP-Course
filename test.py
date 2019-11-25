@@ -23,13 +23,19 @@ def test():
     ep.libStart()
 
     acfg = pj.AccountConfig()
-    acfg.idUri = 'sip:12345@10.105.240.15'
-    cred = pj.AuthCredInfo("digest", "*", "565", pj.PJSIP_CRED_DATA_PLAIN_PASSWD, "258667")
+    acfg.idUri = "sip:1001@47.107.165.248"
+    acfg.regConfig.registrarUri = "sip:47.107.165.248"
+    cred = pj.AuthCredInfo("digest", "*", "1001",
+                           pj.PJSIP_CRED_DATA_PLAIN_PASSWD, "1001")
     acfg.sipConfig.authCreds.append(cred)
-    
+
     acc = pj.Account()
     acc.create(acfg)
-    # time.sleep(10)
+
+    call = pj.Call(acc)
+    prm = pj.CallOpParam()
+    call.makeCall("sip:1002@47.107.165.248", prm)
+    time.sleep(10)
 
     # Destroy the library
     ep.libDestroy()
