@@ -88,12 +88,12 @@ class Application(ttk.Frame):
             self.appConfig.epConfig.uaConfig.threadCnt = 0
             self.appConfig.epConfig.uaConfig.mainThreadOnly = True
         self.appConfig.epConfig.logConfig.writer = self.logger
-        self.appConfig.epConfig.logConfig.filename = "pygui.log"
+        self.appConfig.epConfig.logConfig.filename = "demo.log"
         self.appConfig.epConfig.logConfig.fileFlags = pj.PJ_O_APPEND
         self.appConfig.epConfig.logConfig.level = 5
         self.appConfig.epConfig.logConfig.consoleLevel = 5
 
-    def saveConfig(self, filename='pygui.js'):
+    def saveConfig(self, filename='demo.js'):
         # Save disabled accounts since they are not listed in self.accList
         disabled_accs = [ac for ac in self.appConfig.accounts if not ac.enabled]
         self.appConfig.accounts = []
@@ -112,7 +112,7 @@ class Application(ttk.Frame):
         # Save
         self.appConfig.saveFile(filename)
 
-    def start(self, cfg_file='pygui.js'):
+    def start(self, cfg_file='demo.js'):
         global USE_THREADS
         # Load config
         if cfg_file and os.path.exists(cfg_file):
@@ -131,7 +131,7 @@ class Application(ttk.Frame):
         self.appConfig.epConfig.logConfig.consoleLevel = 5
 
         # Initialize library
-        self.appConfig.epConfig.uaConfig.userAgent = "pygui-" + self.ep.libVersion().full;
+        self.appConfig.epConfig.uaConfig.userAgent = "demo-" + self.ep.libVersion().full;
         self.ep.libInit(self.appConfig.epConfig)
         self.master.title('pjsua2 Demo version ' + self.ep.libVersion().full)
 
