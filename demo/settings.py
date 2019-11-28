@@ -354,9 +354,9 @@ class Dialog(tk.Toplevel):
 if __name__ == '__main__':
 	#application.main()
 	acfg = AppConfig()
-	acfg.loadFile('demo.js')
+	acfg.loadFile('pygui.js')
 
 	dlg = Dialog(None, acfg)
 	if dlg.doModal():
-		acfg.saveFile('demo.js')
+		acfg.saveFile('pygui.js')
 		

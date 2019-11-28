@@ -8,6 +8,7 @@
 """
 import tkinter as tk
 import pjsua2 as pj
+from account import Account
 from main import Main
 from config import *
 from PIL import Image, ImageTk
@@ -17,20 +18,35 @@ from tkinter import messagebox as msg
 class Login(tk.Tk):
     def __init__(self):
         super().__init__()
-        # Set title
-        self.title('Login')
-        # Set location
-        self.geometry('+{}+{}'.format(int(self.winfo_screenwidth() / 2),
-                                      int(self.winfo_screenheight() / 2)))
 
-        # PJSUA2 Endpoint initialize
+        """
+        Initialize PJSUA2
+        """
         self.ep = pj.Endpoint()
         self.ep.libCreate()
 
-        # The account information
+        self.ep_cfg = pj.EpConfig()
+        self.ep_cfg.uaConfig.threadCnt = 0
+        self.ep_cfg.logConfig.level = 1
+        self.ep.libInit(self.ep_cfg)
+
+        self.sip_cfg = pj.TransportConfig()
+        self.ep.transportCreate(pj.PJSIP_TRANSPORT_UDP, self.sip_cfg)
+        self.ep.libStart()
+
+        """
+        Account information
+        """
         self.domain = tk.StringVar(value=default_domain)
-        self.username = tk.StringVar()
-        self.password = tk.StringVar()
+        self.username = tk.StringVar(value='1001')
+        self.password = tk.StringVar(value='1001')
+
+        """
+        Initialize UI
+        """
+        self.title('Login')
+        self.geometry('+{}+{}'.format(int(self.winfo_screenwidth() / 2),
+                                      int(self.winfo_screenheight() / 2)))
 
         self.photo = ImageTk.PhotoImage(Image.open('image/phone.png'))
         tk.Label(self, image=self.photo).grid(column=0, rowspan=3,
@@ -59,7 +75,7 @@ class Login(tk.Tk):
                   width=10).grid(row=5, column=1, padx=5, pady=20)
         tk.Button(self, text='Cancel', command=self.on_exit, font=content_font,
                   width=10).grid(row=5, column=2, padx=5, pady=20)
-
+        
         self.mainloop()
 
     def on_ok(self):
@@ -76,15 +92,28 @@ class Login(tk.Tk):
             errors += 'Invalid SIP URI\n'
 
         if errors:
-            msg.showerror('Error detected:', errors)
+            self.show_error(errors)
             return
-        else:
-            self.destroy()
-            Main(self.ep)
+
+        acc_cfg = pj.AccountConfig()
+        acc_cfg.idUri = 'sip:' + self.username.get() + '@' + self.domain.get()
+        acc_cfg.regConfig.registrarUri = 'sip:' + self.domain.get()
+        acc_cfg.regConfig.registerOnAdd = True
+        acc_cfg.sipConfig.authCreds.append(
+            pj.AuthCredInfo('digest', '*', self.username.get(),
+                            pj.PJSIP_CRED_DATA_PLAIN_PASSWD,
+                            self.password.get()))
+
+        self.destroy()
+        Main(self.ep, acc_cfg)
 
     def on_exit(self):
+        self.ep.libDestroy()
         self.destroy()
+
+    def show_error(self, content):
+        msg.showerror('Error Detected', content)
 
 
 if __name__ == '__main__':
-    login = Login()
+    Login()

@@ -100,6 +100,8 @@ exten => 1002,n,Hangup
 ## 依赖
 - `apt install bison`
 - `apt install flex`
+- `apt install rtpproxy`
+- `apt install libssl-dev`
 - `apt install libxml2`
 - `apt install libxml2-dev`
 - `apt install mysql-server`
@@ -107,9 +109,29 @@ exten => 1002,n,Hangup
 - `apt-get install libncurses5-dev`
 
 ## 安装
-- `wget http://download.opensips.org/opensips-2.4.5.tar.gz`
-- `tar zxf opensips-3.0.0.tar.gz`
-- `cd opensips-3.0.0`
-- `make menuconfig`
+- `git clone https://github.com/OpenSIPS/opensips.git -b 2.4 opensips-2.4`
+- `cd opensips-2.4`
+- 多核编译`make menuconfig -j`
 - 选中`db_mysql`
-- Compiler and Install -->
+- 选择`Compile And Install OpenSIPS`
+- 编译完成后运行`osipsconfig`并进行配置
+- `Generate OpenSIPS Script`->`Residential Script`->`Configure Residential Script`
+  - ENABLE_TCP
+  - USE_ALIASES
+  - USE_AUTH
+  - USE_DBACC
+  - USE_DBUSRLOC
+  - USE_DIALOG
+  - USE_NAT
+- `Generate Residential Script`并退出
+- 将生成后的文件命名为`opensips.cfg`
+- 修改`/usr/local/etc/opensips/opensips.cfg`
+  - `listen:udp:${ip}:5060`
+  - `listen:tcp:${ip}:5060`
+  - `modparam("rtpproxy", "rtpproxy_sock", "udp:${ip}:12221")`
+- 修改`/usr/local/etc/opensips/opensipsctlrc`
+  - 添加`SIP_DOMAIN=${ip}`
+  - 将数据库相关的注释去掉
+- 运行`opensipsdbctl create`创建数据库
+- 运行`rtpproxy -F -l {ip} -s udp:${ip}:12221
+- 运行`opensipsctl start`

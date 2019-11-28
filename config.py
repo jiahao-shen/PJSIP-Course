@@ -8,7 +8,7 @@
 """
 
 # SIP Configuration
-default_domain = '47.107.165.248'
+default_domain = '27.102.107.237'
 
 
 # GUI Configuration

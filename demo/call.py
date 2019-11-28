@@ -94,11 +94,11 @@ class Call(pj.Call):
         self.chat.setTypingIndication(self.peerUri, prm.isTyping)
 
     def onDtmfDigit(self, prm):
-        #msgbox.showinfo("demo", 'Got DTMF:' + prm.digit)
+        #msgbox.showinfo("pygui", 'Got DTMF:' + prm.digit)
         pass
 
     def onCallMediaTransportState(self, prm):
-        #msgbox.showinfo("demo", "Media transport state")
+        #msgbox.showinfo("pygui", "Media transport state")
         pass
 
 
