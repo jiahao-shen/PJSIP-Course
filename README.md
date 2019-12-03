@@ -6,13 +6,14 @@
 # Client端
 ## Pjproject编译
 1. 可以使用源码编译
-- `git clone https://github.com/pjsip/pjproject.git`
-- `cd pjproject`
+- `wget https://www.pjsip.org/release/2.9/pjproject-2.9.zip`
+- `unzip pjproject-2.9.zip`
+- `cd pjproject-2.9`
 - `./configure --enable-shared`
 - `make dep && make`
 - `sudo make install`
 
-2. 如果只安装交互式界面, 可以使用Homebrew
+1. 如果只安装交互式界面, 可以使用Homebrew
 - `brew install pjproject`
 
 
@@ -28,7 +29,6 @@
 - `cd pjsip-apps/src/swig`
 - `make`
 - `make install`
-
 
 
 # Asterisk
@@ -94,8 +94,7 @@ exten => 1002,n,Hangup
 - **注意**: 由于我的阿里云服务器是公网IP, 因此如要修改一下NAT配置。虽然asterisk使用SIP协议建立连接, 但是语音数据包走的还是RTP协议, 因此需要将阿里云的SIP(默认:5060)端口和RTP(默认:10000~20000)端口都开启, 否则会没油声音。
 
 
-<!-- # OpenSips
-- 版本: http://download.opensips.org/opensips-2.4.5.tar.gz2.4.5
+# OpenSips
 
 ## 依赖
 - `apt install bison`
@@ -133,5 +132,5 @@ exten => 1002,n,Hangup
   - 添加`SIP_DOMAIN=${ip}`
   - 将数据库相关的注释去掉
 - 运行`opensipsdbctl create`创建数据库
-- 运行`rtpproxy -F -l {ip} -s udp:${ip}:12221
+- 运行`rtpproxy -F -l {ip} -s udp:${ip}:12221`
 - 运行`opensipsctl start`

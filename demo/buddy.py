@@ -110,7 +110,7 @@ class SettingDialog(tk.Toplevel):
         # Prepare the variables to set/receive values from GUI
         self.cfgUri = tk.StringVar()
         self.cfgUri.set( self.cfg.uri )
-        self.cfgSubscribe = tk.IntVar()
+        self.cfgSubscribe = tk.BooleanVar()
         self.cfgSubscribe.set(self.cfg.subscribe)
 
         # Build the tab page

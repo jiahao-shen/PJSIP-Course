@@ -1,46 +1,85 @@
-import pjsua2 as pj
-import time
+'''
+Created on Mar 21, 2016
+
+@author: Bill Begueradj
+'''
+try:
+    import Tkinter
+    import ttk
+except ImportError:  # Python 3
+    import tkinter as Tkinter
+    import tkinter.ttk as ttk
 
 
-def test():
-    ep = pj.Endpoint()  # Endpoint
+class Begueradj(Tkinter.Frame):
+    '''
+    classdocs
+    '''
+    def __init__(self, parent):
+        '''
+        Constructor
+        '''
+        Tkinter.Frame.__init__(self, parent)
+        self.parent=parent
+        self.initialize_user_interface()
 
-    ep_cfg = pj.EpConfig()  # Endpoint Configuration
-    # ep_cfg.uaConfig   # User Agent settings
-    # ep_cfg.medConfig  # Media global settings
-    ep_cfg.logConfig.level = 1  # Logging settings
+    def initialize_user_interface(self):
+        """Draw a user interface allowing the user to type
+        items and insert them into the treeview
+        """
+        self.parent.title("Canvas Test")
+        self.parent.grid_rowconfigure(0, weight=1)
+        self.parent.grid_columnconfigure(0, weight=1)
+        self.parent.config(background="lavender")
 
-    # Create and initialize library
-    ep.libCreate()
-    ep.libInit(ep_cfg)
+        # Define the different GUI widgets
+        self.dose_label = Tkinter.Label(self.parent, text="Dose:")
+        self.dose_entry = Tkinter.Entry(self.parent)
+        self.dose_label.grid(row=0, column=0, sticky=Tkinter.W)
+        self.dose_entry.grid(row=0, column=1)
 
-    # Create SIP transport. Error handling sample is shown
-    sipTpConfig = pj.TransportConfig()
-    sipTpConfig.port = 5070
-    ep.transportCreate(pj.PJSIP_TRANSPORT_UDP, sipTpConfig)
+        self.modified_label = Tkinter.Label(self.parent,
+                                            text="Date Modified:")
+        self.modified_entry = Tkinter.Entry(self.parent)
+        self.modified_label.grid(row=1, column=0, sticky=Tkinter.W)
+        self.modified_entry.grid(row=1, column=1)
 
-    # Start the library
-    ep.libStart()
+        self.submit_button = Tkinter.Button(self.parent, text="Insert",
+                                            command=self.insert_data)
+        self.submit_button.grid(row=2, column=1, sticky=Tkinter.W)
+        self.exit_button = Tkinter.Button(self.parent, text="Exit",
+                                          command=self.parent.quit)
+        self.exit_button.grid(row=0, column=3)
 
-    acfg = pj.AccountConfig()
-    acfg.idUri = "sip:127.0.0.1"
-    # acfg.regConfig.registrarUri = "sip:27.102.107.237"
-    # cred = pj.AuthCredInfo("digest", "*", "1002",
-                        #    pj.PJSIP_CRED_DATA_PLAIN_PASSWD, "1002")
-    # acfg.sipConfig.authCreds.append(cred)
+        # Set the treeview
+        self.tree = ttk.Treeview(self.parent,
+                                 columns=('Dose', 'Modification date'))
+        self.tree.heading('#0', text='Item')
+        self.tree.heading('#1', text='Dose')
+        self.tree.heading('#2', text='Modification Date')
+        self.tree.column('#1', stretch=Tkinter.YES)
+        self.tree.column('#2', stretch=Tkinter.YES)
+        self.tree.column('#0', stretch=Tkinter.YES)
+        self.tree.grid(row=4, columnspan=4, sticky='nsew')
+        self.treeview = self.tree
+        # Initialize the counter
+        self.i = 0
 
-    acc = pj.Account()
-    acc.create(acfg)
-
-    call = pj.Call(acc)
-    prm = pj.CallOpParam(True)
-    call.makeCall("sip:127.0.0.1:5060", prm)
-
-    # time.sleep(20)
-
-    # Destroy the library
-    ep.libDestroy()
+    def insert_data(self):
+        """
+        Insertion method.
+        """
+        self.treeview.insert('', 'end', text="Item_"+str(self.i),
+                             values=(self.dose_entry.get() + " mg",
+                                     self.modified_entry.get()))
+        # Increment counter
+        self.i = self.i + 1
 
 
-if __name__ == '__main__':
-    test()
+def main():
+    root=Tkinter.Tk()
+    d=Begueradj(root)
+    root.mainloop()
+
+if __name__=="__main__":
+    main()

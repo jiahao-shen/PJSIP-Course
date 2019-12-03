@@ -6,9 +6,6 @@
 @time: 2019-11-25 21:27:25
 @blog: https://jiahaoplus.com
 """
-from pjsua2 import Endpoint
+import pjsua2 as pj
 
-
-def validate_sip_uri(uri):
-    return Endpoint.utilVerifySipUri(uri)
 

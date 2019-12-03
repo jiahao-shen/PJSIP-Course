@@ -33,7 +33,15 @@ class Account(pj.Account):
     def onRegState(self, prm):
         print('onRegState')
         super().onRegState(prm)
-      
+
+        # print(self.isValid())
+        # print(self.getInfo().regLastErr)
+        # print(self.getInfo().regIsActive)
+        # print(self.getInfo().onlineStatus)
+        # print(self.getInfo().onlineStatusText)
+        # print(self.getInfo().regIsConfigured)
+        # print(self.getInfo().regStatus)
+        # print(self.getInfo().regStatusText)
 
     def onRegStarted(self, prm):
         print('onRegStarted')
@@ -47,7 +55,6 @@ class Account(pj.Account):
         # print(self.getInfo().regIsConfigured)
         # print(self.getInfo().regStatus)
         # print(self.getInfo().regStatusText)
-
         # status = '?'
         # if self.isValid():
         #     acc_info = self.getInfo()

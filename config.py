@@ -8,9 +8,9 @@
 """
 
 # SIP Configuration
-default_domain = '27.102.107.237'
+DEFAULT_DOMAIN = '27.102.107.237'
 
 
 # GUI Configuration
-title_font = ('Arial', 20, 'bold')
-content_font = ('Arial', 15, 'normal')
+TITLE = ('Arial', 20, 'bold')
+CONTENT = ('Arial', 15, 'normal')

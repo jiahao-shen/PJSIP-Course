@@ -8,11 +8,25 @@
 """
 import pjsua2 as pj 
 
-
 class Buddy(pj.Buddy):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, app, iid):
+        pj.Buddy.__init__(self)
+        self.app = app
+        self.iid = iid
 
     def onBuddyState(self):
-        buddy_info = self.getInfo()
-        print(buddy_info.uri + ':' + buddy_info.bi.presStatus.statusText)
+        self.app.update_buddy(self)
+
+    def status_text(self):
+        bi = self.getInfo()
+        status = ''
+        if bi.subState == pj.PJSIP_EVSUB_STATE_ACTIVE:
+            if bi.presStatus.status == pj.PJSUA_BUDDY_STATUS_ONLINE:
+                status = bi.presStatus.statusText
+                if not status:
+                    status = 'Online'
+            elif bi.presStatus.status == pj.PJSUA_BUDDY_STATUS_OFFLINE:
+                status = 'Offline'
+            else:
+                status = 'Unknown'
+        return status
