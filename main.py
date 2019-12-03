@@ -13,6 +13,7 @@ from config import *
 from tkinter import ttk
 from buddy import Buddy
 from account import Account
+from chat import ChatDialog
 from login import LoginDialog
 from tkinter import messagebox as msg
 
@@ -57,13 +58,13 @@ class Main(tk.Tk):
         self.geometry('+{}+{}'.format(int(self.winfo_screenwidth() / 2),
                                       int(self.winfo_screenheight() / 2)))
 
-        self.buddy_entry = tk.Entry(self, textvariable=self.input,
+        self.buddy_entry = tk.Entry(self, textvariable=self.input, 
                                     font=CONTENT, width=30)
         self.buddy_entry.grid(row=0, column=0, columnspan=10, padx=10, pady=10)
         self.buddy_entry.bind('<Return>', self._add_buddy)
 
-        self.buddy_view = ttk.Treeview(self, column=['1', '2'],
-                                       show='headings', selectmode='browse')
+        self.buddy_view = ttk.Treeview(self, column=['1', '2'], show='headings', 
+                                       selectmode='browse')
         self.buddy_view.column('1', width=80, anchor='center')
         self.buddy_view.column('2', width=200, anchor='center')
         self.buddy_view.heading('1', text='Buddies')
@@ -92,10 +93,12 @@ class Main(tk.Tk):
 
             self.buddy_list[iid] = bud
             self.update_buddy(bud)
-            self.input.set('')
+        
+        self.input.set('')
 
     def _create_chat(self, event):
-        print('Create Chat')
+        for item in self.buddy_view.selection():
+            ChatDialog(self.acc, self.buddy_list[item])
 
     def _delete_buddy(self, event):
         for item in self.buddy_view.selection():
