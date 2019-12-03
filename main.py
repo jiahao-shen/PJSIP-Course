@@ -2,7 +2,7 @@
 @project: PJSIP-Lab
 @author: sam
 @file main.py
-@ide: PyCharm
+@ide: Visual Studio Code
 @time: 2019-11-24 21:36:37
 @blog: https://jiahaoplus.com
 """
@@ -82,14 +82,15 @@ class Main(tk.Tk):
         self.mainloop()
 
     def _add_buddy(self, event):
-        if not self.buddy_view.exists(self.input.get()):
-            bud = Buddy(self, self.input.get())
+        iid = self.input.get()
+        if not self.buddy_view.exists(iid):
+            bud = Buddy(self, iid) 
             bud_cfg = pj.BuddyConfig()
-            bud_cfg.uri = 'sip:' + self.input.get() + '@' + self.domain
+            bud_cfg.uri = 'sip:' + iid + '@' + self.domain
             bud_cfg.subscribe = True
             bud.create(self.acc, bud_cfg)
 
-            self.buddy_list[self.input.get()] = bud
+            self.buddy_list[iid] = bud
             self.update_buddy(bud)
             self.input.set('')
 

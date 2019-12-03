@@ -1,11 +1,8 @@
 """
 @project: PJSIP-Lab
 @author: sam
-@file utils.py
+@file chat.py
 @ide: Visual Studio Code
-@time: 2019-11-25 21:27:25
+@time: 2019-12-03 17:42:37
 @blog: https://jiahaoplus.com
 """
-import pjsua2 as pj
-
-

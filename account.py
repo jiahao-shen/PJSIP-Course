@@ -2,7 +2,7 @@
 @project: PJSIP-Lab
 @author: sam
 @file account.py
-@ide: PyCharm
+@ide: Visual Studio Code
 @time: 2019-11-26 10:41:37
 @blog: https://jiahaoplus.com
 """
