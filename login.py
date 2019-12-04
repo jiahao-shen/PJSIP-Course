@@ -7,21 +7,19 @@
 @blog: https://jiahaoplus.com
 """
 import utils
-
 import tkinter as tk
 import pjsua2 as pj
-
 from config import *
+from endpoint import *
 from tkinter import messagebox as msg
 
 
 class LoginDialog(tk.Toplevel):
 
-    def __init__(self, parent, ep, cfg):
+    def __init__(self, parent, cfg):
         tk.Toplevel.__init__(self, parent)
         self.transient(parent)
         self.parent = parent
-        self.ep = ep
         self.cfg = cfg
 
         """
@@ -74,7 +72,7 @@ class LoginDialog(tk.Toplevel):
             errors += 'Username is required\n'
         if not self.password.get():
             errors += 'Password is required\n'
-        if not self.ep.utilVerifySipUri('sip:' + self.username.get() + '@' + self.domain.get()) == pj.SUCCESS:
+        if not validateSipUri('sip:' + self.username.get() + '@' + self.domain.get()):
             errors += 'Invalid SIP URI\n'
 
         if errors:

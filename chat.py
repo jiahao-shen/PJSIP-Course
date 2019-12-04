@@ -11,6 +11,7 @@ import pjsua2 as pj
 import tkinter as tk
 
 from config import *
+from call import Call
 from tkinter import ttk
 
 
@@ -21,12 +22,16 @@ class ChatDialog(tk.Toplevel):
         self.acc = acc
         self.bud = bud
 
+        self.call = Call(self.acc, self.bud.cfg.uri, self)
+        self.call_prm = pj.CallOpParam()
+        self.call_prm.opt.audioCount = 1
+
         self.message = tk.StringVar()
 
         """
         Initialize UI
         """
-        self.title(bud.iid)
+        self.title(bud.cfg.uri)
         self.resizable(width=False, height=False)
         self.geometry('+{}+{}'.format(int(self.winfo_screenwidth() / 2),
                                       int(self.winfo_screenheight() / 2)))
@@ -49,12 +54,10 @@ class ChatDialog(tk.Toplevel):
                   command=self._call).grid(row=2, column=0, padx=5, pady=5)
 
         tk.Button(self, text='Hold', font=CONTENT, width=10,
-                  command=self._call).grid(row=2, column=1, padx=5, pady=5)
+                  command=self._hold).grid(row=2, column=1, padx=5, pady=5)
 
         tk.Button(self, text='Hangup', font=CONTENT, width=10,
-                  command=self._call).grid(row=2, column=2, padx=5, pady=5)
-
-        self.mainloop()
+                  command=self._hangup).grid(row=2, column=2, padx=5, pady=5)
 
     def add_message(self, msg):
         self.chart.config(state=tk.NORMAL)
@@ -70,10 +73,10 @@ class ChatDialog(tk.Toplevel):
             self.message.set('')
 
     def _call(self):
-        pass
+        self.call.makeCall(self.bud.cfg.uri, self.call_prm)
 
     def _hold(self):
-        pass
+        self.call.setHold(self.call_prm)
 
     def _hangup(self):
-        pass
+        self.call.hangup(self.call_prm)

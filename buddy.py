@@ -13,6 +13,7 @@ class Buddy(pj.Buddy):
         pj.Buddy.__init__(self)
         self.app = app
         self.iid = iid
+        self.cfg = pj.BuddyConfig()
 
     def onBuddyState(self):
         self.app.update_buddy(self)

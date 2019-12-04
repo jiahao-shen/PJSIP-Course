@@ -8,15 +8,16 @@
 """
 import pjsua2 as pj
 
+from call import Call
 
 class Account(pj.Account):
     def __init__(self, app):
         pj.Account.__init__(self)
         self.app = app
+        self.cfg = pj.AccountConfig()
 
     def onIncomingCall(self, prm):
-        print('onIncomingCall')
-        super().onIncomingCall(prm)
+        self.app.incoming_call(prm)
 
     def onInstantMessage(self, prm):
         print('onInstantMessgae')
