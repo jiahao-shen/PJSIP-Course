@@ -43,9 +43,7 @@ class LoginDialog(tk.Toplevel):
                                               padx=5, pady=5)
 
         tk.Label(self, text='SIP Account Setup', font=TITLE).grid(
-            row=0, column=1, columnspan=2, sticky='w')
-        tk.Label(self, text='Enter account details', font=CONTENT).grid(
-            row=1, column=1, columnspan=2, sticky='w')
+            row=0, column=1, rowspan=2, columnspan=2, padx=5, pady=5)
 
         tk.Label(self, text='Domain', font=CONTENT).grid(row=2, column=1)
         tk.Entry(self, textvariable=self.domain, justify='center',

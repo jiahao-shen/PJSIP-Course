@@ -32,14 +32,15 @@ class Main(tk.Tk):
         self.ep.libCreate()
 
         self.ep_cfg = pj.EpConfig()
-        # self.ep_cfg.uaConfig.threadCnt = 0
-        # self.ep_cfg.uaConfig.mainThreadOnly = True
-        self.ep_cfg.logConfig.level = 1
+        self.ep_cfg.uaConfig.threadCnt = 0
+        self.ep_cfg.uaConfig.mainThreadOnly = True
+        self.ep_cfg.logConfig.level = 5
 
         self.ep.libInit(self.ep_cfg)
 
         self.sip_cfg = pj.TransportConfig()
         self.ep.transportCreate(pj.PJSIP_TRANSPORT_UDP, self.sip_cfg)
+        self.ep.transportCreate(pj.PJSIP_TRANSPORT_TCP, self.sip_cfg)
         self.ep.libStart()
 
         """
@@ -62,7 +63,7 @@ class Main(tk.Tk):
 
         self.buddy_entry = tk.Entry(self, textvariable=self.input,
                                     font=CONTENT, width=30)
-        self.buddy_entry.grid(row=0, column=0, columnspan=10, padx=10, pady=10)
+        self.buddy_entry.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
         self.buddy_entry.bind('<Return>', self._add_buddy)
 
         self.buddy_view = ttk.Treeview(self, column=['1', '2'], show='headings',
@@ -71,18 +72,18 @@ class Main(tk.Tk):
         self.buddy_view.column('2', width=200, anchor='center')
         self.buddy_view.heading('1', text='Buddies')
         self.buddy_view.heading('2', text='Status')
-        self.buddy_view.grid(row=1, column=0, columnspan=10, padx=10, pady=10)
+        self.buddy_view.grid(row=1, column=0, columnspan=3, padx=10, pady=10)
         self.buddy_view.bind('<Double-Button-1>', self._create_chat)
         self.buddy_view.bind('<BackSpace>', self._delete_buddy)
 
         tk.Button(self, text='Logout', font=CONTENT, width=8,
-                  command=self._login).grid(row=2, column=1, padx=10, pady=10)
+                  command=self._login).grid(row=2, column=0, padx=10, pady=10)
         tk.Button(self, text='Exit', font=CONTENT, width=8,
-                  command=self._exit).grid(row=2, column=8, padx=10, pady=10)
+                  command=self._exit).grid(row=2, column=2, padx=10, pady=10)
 
         self._login()
 
-        # self._on_timer()
+        self._on_timer()
 
         self.mainloop()
 
@@ -161,9 +162,13 @@ class Main(tk.Tk):
         self.ep = None
         self.destroy()
 
-    # def _on_timer(self):
-    #     self.ep.libHandleEvents(10)
-    #     self.after(50, self._on_timer)
+    def _on_timer(self):
+        """
+        Important!!!
+        Can't remove!!!
+        """
+        self.ep.libHandleEvents(10)
+        self.after(50, self._on_timer)
 
 
 if __name__ == '__main__':

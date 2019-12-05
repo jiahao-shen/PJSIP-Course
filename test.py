@@ -1,5 +1,6 @@
 import time
 import pjsua2 as pj
+import tkinter as tk
 from call import Call
 
 
@@ -41,5 +42,15 @@ def test_call():
     ep = None
 
 
+def test_tkinter():
+    root = tk.Tk()
+
+    tk.Button(root, text='1', width=10).pack(side=tk.TOP)
+    tk.Button(root, text='2', width=10).pack(side=tk.TOP)
+    tk.Button(root, text='3', width=10).pack(side=tk.LEFT)
+
+    root.mainloop()
+
 if __name__ == '__main__':
-    test_call()
+    # test_call()
+    test_tkinter()

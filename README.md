@@ -26,8 +26,6 @@
 
 2. pjsua2
 - Python版本: 3.6.8
-<!-- - 修改`pjsips-apps/src/swig/python/Makefile` -->
-<!-- - 取消`USE_THREADS`注释 -->
 - `cd pjsip-apps/src/swig`
 - `make`
 - `make install`
