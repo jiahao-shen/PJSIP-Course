@@ -34,7 +34,7 @@ class Main(tk.Tk):
         self.ep_cfg = pj.EpConfig()
         self.ep_cfg.uaConfig.threadCnt = 0
         self.ep_cfg.uaConfig.mainThreadOnly = True
-        self.ep_cfg.logConfig.level = 5
+        self.ep_cfg.logConfig.level = 1
 
         self.ep.libInit(self.ep_cfg)
 
@@ -164,8 +164,7 @@ class Main(tk.Tk):
 
     def _on_timer(self):
         """
-        Important!!!
-        Can't remove!!!
+        Important!!! Can't remove!!!
         """
         self.ep.libHandleEvents(10)
         self.after(50, self._on_timer)

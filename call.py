@@ -20,6 +20,7 @@ class Call(pj.Call):
 
     def onCallState(self, prm):
         ci = self.getInfo()
+        print(ci.state)
         if ci.state == pj.PJSIP_INV_STATE_CALLING:
             self.chat.is_calling()
         elif ci.state == pj.PJSIP_INV_STATE_CONFIRMED:
