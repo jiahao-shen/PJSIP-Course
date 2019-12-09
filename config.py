@@ -13,9 +13,9 @@ DEFAULT_DOMAIN = '27.102.107.237'
 
 
 # GUI Configuration
-TITLE = ('Arial', 20, 'bold')
-CONTENT = ('Arial', 15, 'normal')
-MESSGAE = ('Arial', 20, 'normal')
+FONT_TITLE = ('Arial', 20, 'bold')
+FONT_CONTENT = ('Arial', 15, 'normal')
+FONT_MESSAGE = ('Arial', 20, 'normal')
 
 # Color
 COLOR_BACKGROUND = '#FDFDFD'

@@ -44,24 +44,24 @@ class LoginDialog(tk.Toplevel):
         tk.Label(self, image=self.photo).grid(column=0, rowspan=3,
                                               padx=5, pady=5)
 
-        tk.Label(self, text='SIP Account Setup', font=TITLE).grid(
+        tk.Label(self, text='SIP Account Setup', font=FONT_TITLE).grid(
             row=0, column=1, rowspan=2, columnspan=2, padx=5, pady=5)
 
-        tk.Label(self, text='Domain', font=CONTENT).grid(row=2, column=1)
+        tk.Label(self, text='Domain', font=FONT_CONTENT).grid(row=2, column=1)
         tk.Entry(self, textvariable=self.domain, justify='center',
-                 font=CONTENT).grid(row=2, column=2, padx=5, pady=5)
+                 font=FONT_CONTENT).grid(row=2, column=2, padx=5, pady=5)
 
-        tk.Label(self, text='UserName', font=CONTENT).grid(row=3, column=1)
+        tk.Label(self, text='UserName', font=FONT_CONTENT).grid(row=3, column=1)
         tk.Entry(self, textvariable=self.username, justify='center',
-                 font=CONTENT).grid(row=3, column=2, padx=5, pady=5)
+                 font=FONT_CONTENT).grid(row=3, column=2, padx=5, pady=5)
 
-        tk.Label(self, text='Password', font=CONTENT).grid(row=4, column=1)
+        tk.Label(self, text='Password', font=FONT_CONTENT).grid(row=4, column=1)
         tk.Entry(self, textvariable=self.password, show='*', justify='center',
-                 font=CONTENT).grid(row=4, column=2, padx=5, pady=5)
+                 font=FONT_CONTENT).grid(row=4, column=2, padx=5, pady=5)
 
-        tk.Button(self, text='Login', font=CONTENT, width=10,
+        tk.Button(self, text='Login', font=FONT_CONTENT, width=10,
                   command=self._login).grid(row=5, column=1, padx=5, pady=20)
-        tk.Button(self, text='Exit', font=CONTENT, width=10,
+        tk.Button(self, text='Exit', font=FONT_CONTENT, width=10,
                   command=self._exit).grid(row=5, column=2, padx=5, pady=20)
 
     def _login(self):

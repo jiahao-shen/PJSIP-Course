@@ -62,7 +62,7 @@ class Main(tk.Tk):
                                       int(self.winfo_screenheight() / 2)))
 
         self.buddy_entry = tk.Entry(self, textvariable=self.input,
-                                    font=CONTENT, width=30)
+                                    font=FONT_CONTENT, width=30)
         self.buddy_entry.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
         self.buddy_entry.bind('<Return>', self._add_buddy)
 
@@ -76,9 +76,9 @@ class Main(tk.Tk):
         self.buddy_view.bind('<Double-Button-1>', self._create_chat)
         self.buddy_view.bind('<BackSpace>', self._delete_buddy)
 
-        tk.Button(self, text='Logout', font=CONTENT, width=8,
+        tk.Button(self, text='Logout', font=FONT_CONTENT, width=8,
                   command=self._login).grid(row=2, column=0, padx=10, pady=10)
-        tk.Button(self, text='Exit', font=CONTENT, width=8,
+        tk.Button(self, text='Exit', font=FONT_CONTENT, width=8,
                   command=self._exit).grid(row=2, column=2, padx=10, pady=10)
 
         self._login()
@@ -166,8 +166,9 @@ class Main(tk.Tk):
         """
         Important!!! Can't remove!!!
         """
-        self.ep.libHandleEvents(10)
-        self.after(50, self._on_timer)
+        if ep is not None:
+            self.ep.libHandleEvents(10)
+            self.after(50, self._on_timer)
 
 
 if __name__ == '__main__':

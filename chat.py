@@ -61,16 +61,16 @@ class ChatDialog(tk.Toplevel):
 
         # Message Entry
         self.message_entry = tk.Entry(
-            self, textvariable=self.message, font=CONTENT, width=30)
+            self, textvariable=self.message, font=FONT_CONTENT, width=30)
         self.message_entry.bind('<Return>', self._send_message)
         self.message_entry.grid(row=10, column=0, padx=10, pady=10)
 
         # Call Button
-        tk.Button(self, text='Call', font=CONTENT, width=10,
+        tk.Button(self, text='Call', font=FONT_CONTENT, width=10,
                   command=self._make_call).grid(row=10, column=1, padx=2, pady=2)
 
         # State Label
-        self.state_label = tk.Label(self, font=TITLE)
+        self.state_label = tk.Label(self, font=FONT_TITLE)
         self.state_label.grid(
             row=5, column=3, columnspan=3, padx=10, pady=10)
 
@@ -80,11 +80,11 @@ class ChatDialog(tk.Toplevel):
 
         # Hold Button
         self.hold_button = tk.Button(
-            self, text='Hold', font=CONTENT, width=10, command=self._set_hold)
+            self, text='Hold', font=FONT_CONTENT, width=10, command=self._set_hold)
         self.hold_button.grid(row=9, column=3, padx=10, pady=10)
 
         # Hangup Button
-        tk.Button(self, text='Hangup', font=CONTENT, width=10,
+        tk.Button(self, text='Hangup', font=FONT_CONTENT, width=10,
                   command=self._hang_up).grid(row=9, column=5, padx=10, pady=10)
 
     def add_message(self, msg, flag):
@@ -93,13 +93,13 @@ class ChatDialog(tk.Toplevel):
         if flag == MessageState.SEND:
             content = tk.Frame(self.chat)
             tk.Label(content, image=self.photo).pack(side=tk.RIGHT, anchor='n')
-            tk.Label(content, font=MESSGAE, text=msg, wraplength=200,
+            tk.Label(content, font=FONT_MESSAGE, text=msg, wraplength=200,
                      justify='left', bg=COLOR_SEND_BUBBLE).pack(side=tk.RIGHT)
             content.pack(anchor='e')
         elif flag == MessageState.RECEIVE:
             content = tk.Frame(self.chat)
             tk.Label(content, image=self.photo).pack(side=tk.LEFT, anchor='n')
-            tk.Label(content, font=MESSGAE, text=msg, wraplength=200,
+            tk.Label(content, font=FONT_MESSAGE, text=msg, wraplength=200,
                      justify='left', bg=COLOR_RECEIVE_BUBBLE).pack(side=tk.LEFT)
             content.pack(anchor='w')
         elif flag == MessageState.INFO:
@@ -184,7 +184,7 @@ class StopWatch(tk.Frame):
 
     def makeWidgets(self):
         """ Make the time label. """
-        l = tk.Label(self, textvariable=self.timestr, font=CONTENT)
+        l = tk.Label(self, textvariable=self.timestr, font=FONT_CONTENT)
         self._setTime(self._elapsedtime)
         l.pack(fill=tk.X, expand=tk.NO, pady=2, padx=2)
 
