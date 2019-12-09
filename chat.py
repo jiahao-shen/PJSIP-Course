@@ -11,6 +11,7 @@ import random
 import pjsua2 as pj
 import tkinter as tk
 
+from utils import *
 from config import *
 from call import Call
 from tkinter import ttk
@@ -32,8 +33,7 @@ class ChatDialog(tk.Toplevel):
         self.call_prm.opt.audioCount = 1
 
         self.message = tk.StringVar()
-        self.state = State.DISCONNECT
-
+        self.state = AudioState.DISCONNECT
         """
         Initialize UI
         """
@@ -44,14 +44,15 @@ class ChatDialog(tk.Toplevel):
         self.geometry('+{}+{}'.format(int(self.winfo_screenwidth() / 2),
                                       int(self.winfo_screenheight() / 2)))
 
-        self.canvas = tk.Canvas(self, width=400, height=400)
+        self.canvas = tk.Canvas(
+            self, width=400, height=400, bg=COLOR_BACKGROUND)
         self.canvas.grid(row=0, column=0, rowspan=10, columnspan=2,
                          padx=10, pady=10, sticky='nsew')
         self.chat = tk.Frame(self.canvas)
         self.canvas.create_window(
             (0, 0), window=self.chat, anchor='nw', tags='chat')
-        self.canvas.bind('<Configure>', self._canvas_configure)
-        self.chat.bind('<Configure>', self._chat_configure)
+        self.canvas.bind('<Configure>', self._canvas_resize)
+        self.chat.bind('<Configure>', self._chat_resize)
 
         self.scrl = ttk.Scrollbar(self, orient=tk.VERTICAL,
                                   command=self.canvas.yview)
@@ -66,11 +67,12 @@ class ChatDialog(tk.Toplevel):
 
         # Call Button
         tk.Button(self, text='Call', font=CONTENT, width=10,
-                  command=self._makecall).grid(row=10, column=1, padx=2, pady=2)
+                  command=self._make_call).grid(row=10, column=1, padx=2, pady=2)
 
         # State Label
         self.state_label = tk.Label(self, font=TITLE)
-        self.state_label.grid(row=5, column=3, columnspan=3, padx=10, pady=10)
+        self.state_label.grid(
+            row=5, column=3, columnspan=3, padx=10, pady=10)
 
         # Timer Label
         self.timer = StopWatch(self)
@@ -78,73 +80,77 @@ class ChatDialog(tk.Toplevel):
 
         # Hold Button
         self.hold_button = tk.Button(
-            self, text='Hold', font=CONTENT, width=10, command=self._sethold)
+            self, text='Hold', font=CONTENT, width=10, command=self._set_hold)
         self.hold_button.grid(row=9, column=3, padx=10, pady=10)
 
         # Hangup Button
         tk.Button(self, text='Hangup', font=CONTENT, width=10,
-                  command=self._hangup).grid(row=9, column=5, padx=10, pady=10)
+                  command=self._hang_up).grid(row=9, column=5, padx=10, pady=10)
 
     def add_message(self, msg, flag):
         tk.Label(self.chat, text=time.strftime(
-            '%Y-%m-%d %H:%M:%S', time.localtime())).pack(anchor='center')
-        if flag == 'send':
+            '%H:%M:%S', time.localtime()), fg=COLOR_TIME).pack(anchor='center')
+        if flag == MessageState.SEND:
             content = tk.Frame(self.chat)
-            tk.Label(content, image=self.photo).pack(side=tk.RIGHT)
-            tk.Label(content, font=TITLE, text=msg).pack(side=tk.RIGHT)
+            tk.Label(content, image=self.photo).pack(side=tk.RIGHT, anchor='n')
+            tk.Label(content, font=MESSGAE, text=msg, wraplength=200,
+                     justify='left', bg=COLOR_SEND_BUBBLE).pack(side=tk.RIGHT)
             content.pack(anchor='e')
-        elif flag == 'receive':
+        elif flag == MessageState.RECEIVE:
             content = tk.Frame(self.chat)
-            tk.Label(content, image=self.photo).pack(side=tk.LEFT)
-            tk.Label(content, font=TITLE, text=msg).pack(side=tk.LEFT)
+            tk.Label(content, image=self.photo).pack(side=tk.LEFT, anchor='n')
+            tk.Label(content, font=MESSGAE, text=msg, wraplength=200,
+                     justify='left', bg=COLOR_RECEIVE_BUBBLE).pack(side=tk.LEFT)
             content.pack(anchor='w')
-        elif flag == 'info':
+        elif flag == MessageState.INFO:
             pass
 
+        # Important!!! Can't remove!!!
+        self.chat.update_idletasks()
         self.canvas.yview_moveto(1)
 
     def is_calling(self):
-        self.state = State.CALLING
+        self.state = AudioState.CALLING
         self.state_label['text'] = self.state.value
 
     def is_connect(self):
-        self.state = State.CONNECT
+        self.state = AudioState.CONNECT
         self.state_label['text'] = self.state.value
         self.timer.Reset()
         self.timer.Start()
 
     def is_disconnect(self):
-        self.state = State.DISCONNECT
+        self.state = AudioState.DISCONNECT
         self.state_label['text'] = self.state.value
         self.timer.Stop()
 
     def is_holding(self):
-        self.state = State.HOLD
+        self.state = AudioState.HOLD
         self.state_label['text'] = self.state.value
         self.timer.Stop()
 
     def _send_message(self, event):
         if self.message.get() != '':
             if random.random() > 0.5:
-                self.add_message(self.message.get(), 'send')
+                self.add_message(self.message.get(), MessageState.SEND)
             else:
-                self.add_message(self.message.get(), 'receive')
+                self.add_message(self.message.get(), MessageState.RECEIVE)
             self.message.set('')
 
     def receive_messgae(self, msg):
         pass
         # self.add_message(msg)
 
-    def _makecall(self):
-        if self.state == State.DISCONNECT:
+    def _make_call(self):
+        if self.state == AudioState.DISCONNECT:
             self.call.makeCall(self.bud.cfg.uri, self.call_prm)
 
-    def _sethold(self):
-        if self.state == State.CONNECT:
+    def _set_hold(self):
+        if self.state == AudioState.CONNECT:
             self.call.setHold(self.call_prm)
             self.hold_button['text'] = 'UnHold'
             self.is_holding()
-        elif self.state == State.HOLD:
+        elif self.state == AudioState.HOLD:
             # Important!!! Can't remove!!!
             self.call_prm.opt.audioCount = 1
             self.call_prm.opt.flag = pj.PJSUA_CALL_UNHOLD
@@ -152,21 +158,17 @@ class ChatDialog(tk.Toplevel):
             self.hold_button['text'] = 'Hold'
             self.is_connect()
 
-    def _hangup(self):
-        if self.state == State.CONNECT or self.state == State.HOLD:
+    def _hang_up(self):
+        if self.state == AudioState.CONNECT or self.state == AudioState.HOLD:
             self.call.hangup(self.call_prm)
 
-    def _canvas_configure(self, e):
+    def _canvas_resize(self, event):
         # Important!!! Can't remove!!!
-        if self.chat.winfo_reqwidth() != self.canvas.winfo_width():
-            self.canvas.itemconfigure('chat', width=self.canvas.winfo_width())
+        self.canvas.itemconfig('chat', width=event.width)
 
-    def _chat_configure(self, e):
+    def _chat_resize(self, event):
         # Important!!! Can't remove!!!
-        size = (self.chat.winfo_reqwidth(), self.chat.winfo_reqheight())
-        self.canvas.config(scrollregion="0 0 %s %s" % size)
-        if self.chat.winfo_reqwidth() != self.canvas.winfo_width():
-            self.canvas.config(width=self.chat.winfo_reqwidth())
+        self.canvas.config(scrollregion=self.canvas.bbox('all'))
 
 
 class StopWatch(tk.Frame):

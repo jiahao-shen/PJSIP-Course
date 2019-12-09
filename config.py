@@ -15,9 +15,23 @@ DEFAULT_DOMAIN = '27.102.107.237'
 # GUI Configuration
 TITLE = ('Arial', 20, 'bold')
 CONTENT = ('Arial', 15, 'normal')
+MESSGAE = ('Arial', 20, 'normal')
 
-class State(Enum):
+# Color
+COLOR_BACKGROUND = '#FDFDFD'
+COLOR_SEND_BUBBLE = '#D9F4FE'
+COLOR_RECEIVE_BUBBLE = '#F3F3F3'
+COLOR_TIME = '#CDCCCC'
+# Audio State
+class AudioState(Enum):
     CALLING = 'Calling...'
     CONNECT = 'Connect'
     DISCONNECT = 'Disconnect'
     HOLD = 'Holding...'
+
+# Message State
+class MessageState(Enum):
+    SEND = 'Send'
+    RECEIVE = 'Receive'
+    INFO = 'Info'
+    NULL = 'Null'

@@ -25,7 +25,7 @@ if __name__ == '__main__':
     Bubble(root, 'fdsahfjsadhjkfh').pack()
     root.mainloop()
 
-from tkinter import *
+# from tkinter import *
 # from datetime import datetime
 
 # root = Tk()

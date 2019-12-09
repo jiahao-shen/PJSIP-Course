@@ -6,9 +6,11 @@
 @time: 2019-11-25 12:36:37
 @blog: https://jiahaoplus.com
 """
-import utils
-import tkinter as tk
 import pjsua2 as pj
+import tkinter as tk
+
+
+from utils import *
 from config import *
 from endpoint import *
 from tkinter import messagebox as msg
