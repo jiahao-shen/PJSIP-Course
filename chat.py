@@ -22,11 +22,13 @@ from endpoint import Endpoint
 
 class ChatDialog(tk.Toplevel):
 
-    def __init__(self, acc, bud, call=None):
+    def __init__(self, acc, bud, app):
         tk.Toplevel.__init__(self)
         self.acc = acc
         self.bud = bud
-        self.call = call
+        self.app = app
+
+        self.call = None
         self.state = AudioState.DISCONNECT
 
         """
@@ -81,6 +83,8 @@ class ChatDialog(tk.Toplevel):
         tk.Button(self, text='Hangup', font=FONT_CONTENT, width=10,
                   command=self._hang_up).grid(row=9, column=5, padx=10, pady=10)
 
+        self.protocol('WM_DELETE_WINDOW', self._exit)
+
     def add_message(self, msg, flag):
         tk.Label(self.chat, text=time.strftime(
             '%H:%M:%S', time.localtime()), fg=COLOR_TIME).pack(anchor='center')
@@ -108,6 +112,7 @@ class ChatDialog(tk.Toplevel):
         self.state_label['text'] = self.state.value
 
     def is_connect(self):
+        print('is Connect')
         self.state = AudioState.CONNECT
         self.state_label['text'] = self.state.value
         self.timer.Reset()
@@ -147,6 +152,12 @@ class ChatDialog(tk.Toplevel):
             # Make call
             self.call.makeCall(self.bud.cfg.uri, call_prm)
 
+    def receive_call(self, call):
+        self.call = call
+        call_prm = pj.CallOpParam()
+        call_prm.statusCode = 200
+        self.call.answer(call_prm)
+
     def _set_hold(self):
         if self.call is not None:
             call_prm = pj.CallOpParam()
@@ -180,6 +191,12 @@ class ChatDialog(tk.Toplevel):
         # Important!!! Can't remove!!!
         self.canvas.config(scrollregion=self.canvas.bbox('all'))
 
+    def _exit(self):
+        try:
+            self.app.delete_chat(self.bud.iid)
+            self.destroy()
+        except:
+            self.destroy()
 
 class StopWatch(tk.Frame):
     """ Implements a stop watch frame widget. """
@@ -234,13 +251,15 @@ class StopWatch(tk.Frame):
 
 
 def test():
-    acc = Account(None)
+    root = tk.Tk()
 
+    acc = Account(None)
     bud = Buddy(None, '1002')
     bud_cfg = pj.BuddyConfig()
     bud_cfg.uri = 'sip:1002@27.102.107.237'
 
-    ChatDialog(acc, bud).mainloop()
+    ChatDialog(acc, bud, root)
+    root.mainloop()
 
 
 if __name__ == '__main__':

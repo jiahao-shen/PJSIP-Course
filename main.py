@@ -49,7 +49,6 @@ class Main(tk.Tk):
         self.acc = None
         self.domain = DEFAULT_DOMAIN
 
-        self.input = tk.StringVar()
         self.buddy_list = {}
         self.chat_list = {}
 
@@ -61,10 +60,9 @@ class Main(tk.Tk):
         self.geometry('+{}+{}'.format(int(self.winfo_screenwidth() / 2),
                                       int(self.winfo_screenheight() / 2)))
 
-        self.buddy_entry = tk.Entry(self, textvariable=self.input,
-                                    font=FONT_CONTENT, width=30)
-        self.buddy_entry.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
-        self.buddy_entry.bind('<Return>', self._add_buddy)
+        self.buddy = tk.Entry(self, font=FONT_CONTENT, width=30)
+        self.buddy.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
+        self.buddy.bind('<Return>', self._add_buddy)
 
         self.buddy_view = ttk.Treeview(self, column=['1', '2'], show='headings',
                                        selectmode='browse')
@@ -88,8 +86,9 @@ class Main(tk.Tk):
         self.mainloop()
 
     def _add_buddy(self, event):
-        iid = self.input.get()
-        if not self.buddy_view.exists(iid):
+        iid = self.buddy.get()
+
+        if iid not in self.buddy_list:
             # Initialize buddy
             bud = Buddy(self, iid)
             # Initialize configuration of buddy
@@ -103,7 +102,7 @@ class Main(tk.Tk):
             self.buddy_list[iid] = bud
             self.update_buddy(bud)
 
-        self.input.set('')
+        self.buddy.delete(0, 'end')
 
     def _delete_buddy(self, event):
         for item in self.buddy_view.selection():
@@ -112,26 +111,42 @@ class Main(tk.Tk):
 
     def update_buddy(self, bud):
         iid = bud.iid
-        if self.buddy_view.exists(iid):
+        if iid in self.buddy_list:
             self.buddy_view.item(iid, value=(iid, bud.status_text()))
         else:
             self.buddy_view.insert(
                 '', 'end', iid=iid, values=(iid, bud.status_text()))
 
     def incoming_call(self, prm):
-        pass
-        # call = Call(self.acc, call_id=prm.callId)
-        # call_prm = pj.CallOpParam()
-        # call_prm.statusCode = 180
-        # call.answer(call_prm)
-        # ci = call.getInfo()
-        # iid = ci.remoteUri.split(':')[1].split('@')[0]
-        # if msg.askquestion('Incoming Call', 'Accept call from ' + iid + ' ?', default=msg.YES):
-        #     call_prm.statusCode = 200
-        #     call.answer(call_prm)
-        #     self.call_list[iid] = call
-        # else:
-        #     call.hangup(call_prm)
+        # TODO(Still have bugs to fix)
+        call = Call(self.acc, call_id=prm.callId)
+        call_prm = pj.CallOpParam()
+        call_prm.statusCode = 180
+        call.answer(call_prm)
+        ci = call.getInfo()
+        iid = ci.remoteUri.split(':')[1].split('@')[0]
+        if msg.askquestion('Incoming Call', 'Accept call from ' + iid + ' ?', default=msg.YES):
+            # If not exist current buddy, then create
+            if iid not in self.buddy_list:
+                # Initialize buddy
+                bud = Buddy(self, iid)
+                # Initialize configuration of buddy
+                bud_cfg = pj.BuddyConfig()
+                bud_cfg.uri = 'sip:' + iid + '@' + self.domain
+                bud_cfg.subscribe = True
+                # Create buddy
+                bud.cfg = bud_cfg
+                bud.create(self.acc, bud.cfg)
+                # Push into buddy_list
+                self.buddy_list[iid] = bud
+                self.update_buddy(bud)
+            # If not exist current chat dialog, then create
+            if iid not in self.chat_list:
+                self.chat_list[iid] = ChatDialog(self.acc, self.buddy_list[iid], self)
+            
+            self.chat_list[iid].receive_call(call)
+        else:
+            call.hangup(call_prm)
 
     def instant_message(self, uri, msg):
         iid = uri[1: -1].split(':')[1].split('@')[0]
@@ -141,9 +156,11 @@ class Main(tk.Tk):
             pass
 
     def _create_chat(self, event):
-        for item in self.buddy_view.selection():
-            print(item)
-            self.chat_list[item] = ChatDialog(self.acc, self.buddy_list[item])
+        for iid in self.buddy_view.selection():
+            self.chat_list[iid] = ChatDialog(self.acc, self.buddy_list[iid], self)
+
+    def delete_chat(self, iid):
+        self.chat_list.pop(iid)
 
     def _login(self):
         # Initialize configuration of account
