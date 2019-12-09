@@ -119,18 +119,19 @@ class Main(tk.Tk):
                 '', 'end', iid=iid, values=(iid, bud.status_text()))
 
     def incoming_call(self, prm):
-        call = Call(self.acc, call_id=prm.callId)
-        call_prm = pj.CallOpParam()
-        call_prm.statusCode = 180
-        call.answer(call_prm)
-        ci = call.getInfo()
-        iid = ci.remoteUri.split(':')[1].split('@')[0]
-        if msg.askquestion('Incoming Call', 'Accept call from ' + iid + ' ?', default=msg.YES):
-            call_prm.statusCode = 200
-            call.answer(call_prm)
-            self.call_list[iid] = call
-        else:
-            call.hangup(call_prm)
+        pass
+        # call = Call(self.acc, call_id=prm.callId)
+        # call_prm = pj.CallOpParam()
+        # call_prm.statusCode = 180
+        # call.answer(call_prm)
+        # ci = call.getInfo()
+        # iid = ci.remoteUri.split(':')[1].split('@')[0]
+        # if msg.askquestion('Incoming Call', 'Accept call from ' + iid + ' ?', default=msg.YES):
+        #     call_prm.statusCode = 200
+        #     call.answer(call_prm)
+        #     self.call_list[iid] = call
+        # else:
+        #     call.hangup(call_prm)
 
     def _create_chat(self, event):
         for item in self.buddy_view.selection():
@@ -166,7 +167,7 @@ class Main(tk.Tk):
         """
         Important!!! Can't remove!!!
         """
-        if ep is not None:
+        if self.ep is not None:
             self.ep.libHandleEvents(10)
             self.after(50, self._on_timer)
 

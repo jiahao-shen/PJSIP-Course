@@ -22,18 +22,15 @@ from endpoint import Endpoint
 
 class ChatDialog(tk.Toplevel):
 
-    def __init__(self, acc, bud):
+    def __init__(self, acc, bud, call=None):
         tk.Toplevel.__init__(self)
         self.acc = acc
         self.bud = bud
-
-        self.call = Call(self.acc, self.bud.cfg.uri, self)
-        self.call_prm = pj.CallOpParam()
-        # Important!!! Can't remove!!!
-        self.call_prm.opt.audioCount = 1
+        self.call = call
 
         self.message = tk.StringVar()
         self.state = AudioState.DISCONNECT
+
         """
         Initialize UI
         """
@@ -94,13 +91,13 @@ class ChatDialog(tk.Toplevel):
             content = tk.Frame(self.chat)
             tk.Label(content, image=self.photo).pack(side=tk.RIGHT, anchor='n')
             tk.Label(content, font=FONT_MESSAGE, text=msg, wraplength=200,
-                     justify='left', bg=COLOR_SEND_BUBBLE).pack(side=tk.RIGHT)
+                     justify='left', bg=COLOR_SEND_BUBBLE).pack(side=tk.RIGHT, ipadx=5, ipady=5)
             content.pack(anchor='e')
         elif flag == MessageState.RECEIVE:
             content = tk.Frame(self.chat)
             tk.Label(content, image=self.photo).pack(side=tk.LEFT, anchor='n')
-            tk.Label(content, font=FONT_MESSAGE, text=msg, wraplength=200,
-                     justify='left', bg=COLOR_RECEIVE_BUBBLE).pack(side=tk.LEFT)
+            tk.Label(content, font=FONT_MESSAGE, text=msg, wraplength=200, justify='left',
+                     bg=COLOR_RECEIVE_BUBBLE).pack(side=tk.LEFT, ipadx=5, ipady=5)
             content.pack(anchor='w')
         elif flag == MessageState.INFO:
             pass
@@ -143,24 +140,39 @@ class ChatDialog(tk.Toplevel):
 
     def _make_call(self):
         if self.state == AudioState.DISCONNECT:
-            self.call.makeCall(self.bud.cfg.uri, self.call_prm)
+            # Initialize Call
+            self.call = Call(self.acc, self.bud.cfg.uri, self)
+            # Create paramter
+            call_prm = pj.CallOpParam()
+            # Important!!! Can't remove!!!
+            call_prm.opt.audioCount = 1
+            # Make call
+            self.call.makeCall(self.bud.cfg.uri, call_prm)
 
     def _set_hold(self):
-        if self.state == AudioState.CONNECT:
-            self.call.setHold(self.call_prm)
-            self.hold_button['text'] = 'UnHold'
-            self.is_holding()
-        elif self.state == AudioState.HOLD:
-            # Important!!! Can't remove!!!
-            self.call_prm.opt.audioCount = 1
-            self.call_prm.opt.flag = pj.PJSUA_CALL_UNHOLD
-            self.call.reinvite(self.call_prm)
-            self.hold_button['text'] = 'Hold'
-            self.is_connect()
+        if self.call is not None:
+            call_prm = pj.CallOpParam()
+            if self.state == AudioState.CONNECT:
+                self.call.setHold(call_prm)
+                self.hold_button['text'] = 'UnHold'
+                self.is_holding()
+            elif self.state == AudioState.HOLD:
+                # Important!!! Can't remove!!!
+                call_prm.opt.audioCount = 1
+                call_prm.opt.flag = pj.PJSUA_CALL_UNHOLD
+                self.call.reinvite(call_prm)
+                self.hold_button['text'] = 'Hold'
+                self.is_connect()
+        else:
+            print('Call isn\'t initialized')
 
     def _hang_up(self):
-        if self.state == AudioState.CONNECT or self.state == AudioState.HOLD:
-            self.call.hangup(self.call_prm)
+        if self.call is not None:
+            call_prm = pj.CallOpParam()
+            if self.state != AudioState.DISCONNECT:
+                self.call.hangup(call_prm)
+        else:
+            print('Call isn\'t initialized')
 
     def _canvas_resize(self, event):
         # Important!!! Can't remove!!!
