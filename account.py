@@ -20,8 +20,7 @@ class Account(pj.Account):
         self.app.incoming_call(prm)
 
     def onInstantMessage(self, prm):
-        print('onInstantMessgae')
-        super().onInstantMessage(prm)
+        self.app.instant_message(prm.fromUri, prm.msgBody)
 
     def onInstantMessageStatus(self, prm):
         print('onInstantMessageStatus')

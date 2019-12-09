@@ -51,7 +51,7 @@ class Main(tk.Tk):
 
         self.input = tk.StringVar()
         self.buddy_list = {}
-        self.call_list = {}
+        self.chat_list = {}
 
         """
         Initialize UI
@@ -133,9 +133,17 @@ class Main(tk.Tk):
         # else:
         #     call.hangup(call_prm)
 
+    def instant_message(self, uri, msg):
+        iid = uri[1: -1].split(':')[1].split('@')[0]
+        if iid in self.chat_list:
+            self.chat_list[iid].receive_message(msg)
+        else:
+            pass
+
     def _create_chat(self, event):
         for item in self.buddy_view.selection():
-            ChatDialog(self.acc, self.buddy_list[item])
+            print(item)
+            self.chat_list[item] = ChatDialog(self.acc, self.buddy_list[item])
 
     def _login(self):
         # Initialize configuration of account

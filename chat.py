@@ -27,8 +27,6 @@ class ChatDialog(tk.Toplevel):
         self.acc = acc
         self.bud = bud
         self.call = call
-
-        self.message = tk.StringVar()
         self.state = AudioState.DISCONNECT
 
         """
@@ -57,10 +55,9 @@ class ChatDialog(tk.Toplevel):
         self.scrl.grid(row=0, column=2, rowspan=10, sticky='nsw')
 
         # Message Entry
-        self.message_entry = tk.Entry(
-            self, textvariable=self.message, font=FONT_CONTENT, width=30)
-        self.message_entry.bind('<Return>', self._send_message)
-        self.message_entry.grid(row=10, column=0, padx=10, pady=10)
+        self.message = tk.Entry(self, font=FONT_CONTENT, width=30)
+        self.message.bind('<Return>', self._send_message)
+        self.message.grid(row=10, column=0, padx=10, pady=10)
 
         # Call Button
         tk.Button(self, text='Call', font=FONT_CONTENT, width=10,
@@ -127,16 +124,17 @@ class ChatDialog(tk.Toplevel):
         self.timer.Stop()
 
     def _send_message(self, event):
-        if self.message.get() != '':
-            if random.random() > 0.5:
-                self.add_message(self.message.get(), MessageState.SEND)
-            else:
-                self.add_message(self.message.get(), MessageState.RECEIVE)
-            self.message.set('')
+        msg = self.message.get()
+        if msg != '':
+            msg_prm = pj.SendInstantMessageParam()
+            msg_prm.content = msg
+            self.bud.sendInstantMessage(msg_prm)
 
-    def receive_messgae(self, msg):
-        pass
-        # self.add_message(msg)
+            self.add_message(msg, MessageState.SEND)
+            self.message.delete(0, 'end')
+
+    def receive_message(self, msg):
+        self.add_message(msg, MessageState.RECEIVE)
 
     def _make_call(self):
         if self.state == AudioState.DISCONNECT:
