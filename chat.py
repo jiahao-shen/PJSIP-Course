@@ -112,7 +112,6 @@ class ChatDialog(tk.Toplevel):
         self.state_label['text'] = self.state.value
 
     def is_connect(self):
-        print('is Connect')
         self.state = AudioState.CONNECT
         self.state_label['text'] = self.state.value
         self.timer.Reset()
@@ -153,9 +152,13 @@ class ChatDialog(tk.Toplevel):
             self.call.makeCall(self.bud.cfg.uri, call_prm)
 
     def receive_call(self, call):
+        # TODO(NO ACK RECEIVE)
+        # Update call and set chat
         self.call = call
+        self.call.chat = self
+        # Receive call
         call_prm = pj.CallOpParam()
-        call_prm.statusCode = 200
+        call_prm.statusCode = pj.PJSIP_SC_OK
         self.call.answer(call_prm)
 
     def _set_hold(self):
@@ -180,8 +183,6 @@ class ChatDialog(tk.Toplevel):
             call_prm = pj.CallOpParam()
             if self.state != AudioState.DISCONNECT:
                 self.call.hangup(call_prm)
-        else:
-            print('Call isn\'t initialized')
 
     def _canvas_resize(self, event):
         # Important!!! Can't remove!!!
@@ -194,6 +195,7 @@ class ChatDialog(tk.Toplevel):
     def _exit(self):
         try:
             self.app.delete_chat(self.bud.iid)
+            self._hang_up()
             self.destroy()
         except:
             self.destroy()

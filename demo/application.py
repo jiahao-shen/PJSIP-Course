@@ -90,8 +90,8 @@ class Application(ttk.Frame):
         self.appConfig.epConfig.logConfig.writer = self.logger
         self.appConfig.epConfig.logConfig.filename = "pygui.log"
         self.appConfig.epConfig.logConfig.fileFlags = pj.PJ_O_APPEND
-        self.appConfig.epConfig.logConfig.level = 5
-        self.appConfig.epConfig.logConfig.consoleLevel = 5
+        self.appConfig.epConfig.logConfig.level = 1
+        self.appConfig.epConfig.logConfig.consoleLevel = 1
 
     def saveConfig(self, filename='pygui.js'):
         # Save disabled accounts since they are not listed in self.accList
@@ -127,8 +127,8 @@ class Application(ttk.Frame):
         self.appConfig.epConfig.uaConfig.threadCnt = 0
         self.appConfig.epConfig.uaConfig.mainThreadOnly = True
         self.appConfig.epConfig.logConfig.writer = self.logger
-        self.appConfig.epConfig.logConfig.level = 5
-        self.appConfig.epConfig.logConfig.consoleLevel = 5
+        self.appConfig.epConfig.logConfig.level = 1
+        self.appConfig.epConfig.logConfig.consoleLevel = 1
 
         # Initialize library
         self.appConfig.epConfig.uaConfig.userAgent = "pygui-" + self.ep.libVersion().full;

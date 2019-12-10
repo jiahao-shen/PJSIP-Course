@@ -49,6 +49,7 @@ class Call(pj.Call):
     def onCallState(self, prm):
         ci = self.getInfo()
         self.connected = ci.state == pj.PJSIP_INV_STATE_CONFIRMED
+        print('connected:', self.connected)
         if self.chat:
             self.chat.updateCallState(self, ci)
 

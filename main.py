@@ -34,13 +34,12 @@ class Main(tk.Tk):
         self.ep_cfg = pj.EpConfig()
         self.ep_cfg.uaConfig.threadCnt = 0
         self.ep_cfg.uaConfig.mainThreadOnly = True
-        self.ep_cfg.logConfig.level = 1
+        self.ep_cfg.logConfig.level = 5
 
         self.ep.libInit(self.ep_cfg)
 
         self.sip_cfg = pj.TransportConfig()
         self.ep.transportCreate(pj.PJSIP_TRANSPORT_UDP, self.sip_cfg)
-        self.ep.transportCreate(pj.PJSIP_TRANSPORT_TCP, self.sip_cfg)
         self.ep.libStart()
 
         """
@@ -118,13 +117,14 @@ class Main(tk.Tk):
                 '', 'end', iid=iid, values=(iid, bud.status_text()))
 
     def incoming_call(self, prm):
-        # TODO(Still have bugs to fix)
         call = Call(self.acc, call_id=prm.callId)
         call_prm = pj.CallOpParam()
-        call_prm.statusCode = 180
+        # Ringing State
+        call_prm.statusCode = pj.PJSIP_SC_RINGING
         call.answer(call_prm)
-        ci = call.getInfo()
-        iid = ci.remoteUri.split(':')[1].split('@')[0]
+        # Set uri
+        call.uri = call.getInfo().remoteUri
+        iid = call.uri.split(':')[1].split('@')[0]
         if msg.askquestion('Incoming Call', 'Accept call from ' + iid + ' ?', default=msg.YES):
             # If not exist current buddy, then create
             if iid not in self.buddy_list:
@@ -142,8 +142,9 @@ class Main(tk.Tk):
                 self.update_buddy(bud)
             # If not exist current chat dialog, then create
             if iid not in self.chat_list:
-                self.chat_list[iid] = ChatDialog(self.acc, self.buddy_list[iid], self)
-            
+                self.chat_list[iid] = ChatDialog(
+                    self.acc, self.buddy_list[iid], self)
+
             self.chat_list[iid].receive_call(call)
         else:
             call.hangup(call_prm)
@@ -157,7 +158,8 @@ class Main(tk.Tk):
 
     def _create_chat(self, event):
         for iid in self.buddy_view.selection():
-            self.chat_list[iid] = ChatDialog(self.acc, self.buddy_list[iid], self)
+            self.chat_list[iid] = ChatDialog(
+                self.acc, self.buddy_list[iid], self)
 
     def delete_chat(self, iid):
         self.chat_list.pop(iid)

@@ -20,20 +20,30 @@ class Call(pj.Call):
 
     def onCallState(self, prm):
         ci = self.getInfo()
-        print(ci.state)
         if ci.state == pj.PJSIP_INV_STATE_CALLING:
+            print('PJSIP_INV_STATE_CALLING')
             self.chat.is_calling()
-        elif ci.state == pj.PJSIP_INV_STATE_CONFIRMED:
+        elif ci.state == pj.PJSIP_INV_STATE_CONNECTING:
+            print('PJSIP_INV_STATE_CONNECTING')
             self.chat.is_connect()
         elif ci.state == pj.PJSIP_INV_STATE_DISCONNECTED:
+            print('PJSIP_INV_STATE_DISCONNECTED')
             self.chat.is_disconnect()
+        elif ci.state == pj.PJSIP_INV_STATE_CONFIRMED:
+            print('PJSIP_INV_STATE_CONFIRMED')
+        elif ci.state == pj.PJSIP_INV_STATE_EARLY:
+            print('PJSIP_INV_STATE_EARLY')
+        elif ci.state == pj.PJSIP_INV_STATE_INCOMING:
+            print('PJSIP_INV_STATE_INCOMING')
+        elif ci.state == pj.PJSIP_INV_STATE_NULL:
+            print('PJSIP_INV_STATE_NULL')
 
     def onCallMediaState(self, prm):
         am = self.getAudioMedia(-1)
         mgr = Endpoint.instance.audDevManager()
         am.startTransmit(mgr.getPlaybackDevMedia())
         mgr.getCaptureDevMedia().startTransmit(am)
-        
+
     def onInstantMessage(self, prm):
         return super().onInstantMessage(prm)
 
@@ -48,5 +58,3 @@ class Call(pj.Call):
 
     def onCallMediaTransportState(self, prm):
         return super().onCallMediaTransportState(prm)
-
-
