@@ -6,6 +6,6 @@ __pycache__/*
 *.log
 *.js
 *.pyc
-tempCodeRunnderFile.py
+tempCodeRunnerFile.py
 pjproject/*
 test.*
