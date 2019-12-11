@@ -11,15 +11,6 @@ import pjsua2 as pj
 from endpoint import Endpoint
 
 
-def preprocess_message(message):
-    MAX_WIDTH = 20
-    res = []
-    for i in range(len(message)):
-        if i % MAX_WIDTH == 0:
-            res.append(message[i: i + MAX_WIDTH])
-    return '\n'.join(res)
-
-
 def validateUri(uri):
     return Endpoint.instance.utilVerifyUri(uri) == pj.PJ_SUCCESS
 

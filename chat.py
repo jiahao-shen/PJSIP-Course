@@ -74,6 +74,24 @@ class ChatDialog(tk.Toplevel):
         self.timer = StopWatch(self)
         self.timer.grid(row=6, column=3, columnspan=3, padx=10, pady=10)
 
+        # RX Volume Scale
+        tk.Label(self, text='Micphone', font=FONT_CONTENT).grid(
+            row=7, column=3, padx=10, pady=10)
+        self.rx_scale = tk.Scale(
+            self, from_=0.0, to=10.0, orient=tk.HORIZONTAL, showvalue=0)
+        self.rx_scale.set(5.0)
+        self.rx_scale.bind('<ButtonRelease-1>', self._rx_volume)
+        self.rx_scale.grid(row=7, column=4, columnspan=2, padx=5, pady=5)
+
+        # TX Volume Scale
+        tk.Label(self, text='Speaker', font=FONT_CONTENT).grid(
+            row=8, column=3, padx=10, pady=10)
+        self.tx_scale = tk.Scale(
+            self, from_=0.0, to=10.0, orient=tk.HORIZONTAL, showvalue=0)
+        self.tx_scale.set(5.0)
+        self.tx_scale.bind('<ButtonRelease-1>', self._tx_volume)
+        self.tx_scale.grid(row=8, column=4, columnspan=2, padx=5, pady=5)
+
         # Hold Button
         self.hold_button = tk.Button(
             self, text='Hold', font=FONT_CONTENT, width=10, command=self._set_hold)
@@ -88,7 +106,7 @@ class ChatDialog(tk.Toplevel):
     def add_message(self, msg, flag):
         tk.Label(self.chat, text=time.strftime(
             '%H:%M:%S', time.localtime()), fg=COLOR_TIME).pack(anchor='center')
-        if flag == MessageState.SEND:
+        if flag == MessageState.SEND or MessageState.INFO:
             content = tk.Frame(self.chat)
             tk.Label(content, image=self.photo).pack(side=tk.RIGHT, anchor='n')
             tk.Label(content, font=FONT_MESSAGE, text=msg, wraplength=200,
@@ -100,8 +118,6 @@ class ChatDialog(tk.Toplevel):
             tk.Label(content, font=FONT_MESSAGE, text=msg, wraplength=200, justify='left',
                      bg=COLOR_RECEIVE_BUBBLE).pack(side=tk.LEFT, ipadx=5, ipady=5)
             content.pack(anchor='w')
-        elif flag == MessageState.INFO:
-            pass
 
         # Important!!! Can't remove!!!
         self.chat.update_idletasks()
@@ -121,6 +137,7 @@ class ChatDialog(tk.Toplevel):
         self.state = AudioState.DISCONNECT
         self.state_label['text'] = self.state.value
         self.timer.stop()
+        self.add_message('Call Ended\nLast ' + self.timer.get(), MessageState.INFO)
 
     def is_hold(self):
         self.state = AudioState.HOLD
@@ -188,6 +205,15 @@ class ChatDialog(tk.Toplevel):
             if self.state != AudioState.DISCONNECT:
                 self.call.hangup(call_prm)
 
+    def _rx_volume(self, event):
+        am = self.call.getAudioMedia(-1)
+        am.adjustRxLevel(self.rx_scale.get() / 10.0)
+        
+
+    def _tx_volume(self, event):
+        am = self.call.getAudioMedia(-1)
+        am.adjustTxLevel(self.tx_scale.get() / 10.0)
+
     def _canvas_resize(self, event):
         # Important!!! Can't remove!!!
         self.canvas.itemconfig('chat', width=event.width)
@@ -204,6 +230,7 @@ class ChatDialog(tk.Toplevel):
         except:
             self.destroy()
 
+
 class StopWatch(tk.Frame):
     """ Implements a stop watch frame widget. """
 
@@ -217,7 +244,7 @@ class StopWatch(tk.Frame):
 
     def makeWidgets(self):
         """ Make the time label. """
-        l = tk.Label(self, textvariable=self.timestr, font=FONT_CONTENT)
+        l = tk.Label(self, textvariable=self.timestr, font=FONT_TITLE)
         self._setTime(self._elapsedtime)
         l.pack(fill=tk.X, expand=tk.NO, pady=2, padx=2)
 
@@ -255,6 +282,8 @@ class StopWatch(tk.Frame):
         self._elapsedtime = 0.0
         self._setTime(self._elapsedtime)
 
+    def get(self):
+        return self.timestr.get()
 
 def test():
     root = tk.Tk()

@@ -10,6 +10,7 @@ from enum import Enum
 
 # SIP Configuration
 DEFAULT_DOMAIN = '27.102.107.237'
+# DEFAULT_DOMAIN = '47.107.165.248'
 
 
 # GUI Configuration
