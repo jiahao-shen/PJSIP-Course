@@ -183,7 +183,7 @@ class ChatDialog(tk.Toplevel):
         self.call.answer(call_prm)
 
     def _set_hold(self):
-        if self.call is not None:
+        if self.call:
             call_prm = pj.CallOpParam()
             if self.state == AudioState.CONNECT:
                 self.call.setHold(call_prm)
@@ -200,7 +200,7 @@ class ChatDialog(tk.Toplevel):
             print('Call isn\'t initialized')
 
     def _hang_up(self):
-        if self.call is not None:
+        if self.call:
             call_prm = pj.CallOpParam()
             if self.state != AudioState.DISCONNECT:
                 self.call.hangup(call_prm)

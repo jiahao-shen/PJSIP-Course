@@ -97,22 +97,30 @@ exten => 1002,n,Hangup
 # OpenSips
 
 ## 依赖
-- `apt install bison`
 - `apt install flex`
+- `apt install bison`
+- `apt install libxml2`
 - `apt install rtpproxy`
 - `apt install libssl-dev`
-- `apt install libxml2`
 - `apt install libxml2-dev`
 - `apt install mysql-server`
 - `apt install libmysqlclient-dev` 
 - `apt-get install libncurses5-dev`
+- `apt-get install libcurl4-gnutls-dev`
+  
 
-## 安装
+## 编译安装
 - `git clone https://github.com/OpenSIPS/opensips.git -b 2.4 opensips-2.4`
 - `cd opensips-2.4`
 - 多核编译`make menuconfig -j`
-- 选中`db_mysql`
+- 选中附加模块
+  - `db_mysql`
+  - `xcap`
+  - `presence`
+  - `presence_xml`
 - 选择`Compile And Install OpenSIPS`
+
+## 配置文件
 - 编译完成后运行`osipsconfig`并进行配置
 - `Generate OpenSIPS Script`->`Residential Script`->`Configure Residential Script`
   - ENABLE_TCP
@@ -125,17 +133,73 @@ exten => 1002,n,Hangup
 - `Generate Residential Script`并退出
 - 将生成后的文件命名为`opensips.cfg`
 - 修改`/usr/local/etc/opensips/opensips.cfg`
-  - `listen:udp:${ip}:5060`
-  - `listen:tcp:${ip}:5060`
-  - `modparam("rtpproxy", "rtpproxy_sock", "udp:${ip}:12221")`
+```bash
+listen:udp:${ip}:5060
+listen:tcp:${ip}:5060
+
+# rtpproxy module
+loadmodule "rtpproxy.so"
+modparam("rtpproxy", "rtpproxy_sock", "unix:/var/run/rtpproxy/rtpproxy.sock") 
+
+# presence module
+loadmodule "presence.so"
+loadmodule "presence_xml.so"
+
+modparam("presence","db_url","mysql://opensips:opensipsrw@localhost/opensips")
+modparam("presence","server_address","sip:sa@${ip}:5060")
+modparam("presence_xml","force_active",1)
+
+# xcap module
+loadmodule "xcap.so"
+
+modparam("xcap","db_url","mysql://opensips:opensipsrw@localhost/opensips")
+```
 - 修改`/usr/local/etc/opensips/opensipsctlrc`
-  - 添加`SIP_DOMAIN=${ip}`
-  - 将数据库相关的注释去掉
+```bash
+## your SIP domain
+SIP_DOMAIN=${ip}
+
+## chrooted directory
+# $CHROOT_DIR="/path/to/chrooted/directory"
+
+## database type: MYSQL, PGSQL, ORACLE, DB_BERKELEY, DBTEXT, or SQLITE
+## by default none is loaded
+# If you want to setup a database with opensipsdbctl, you must at least specify
+# this parameter.
+DBENGINE=MYSQL
+
+## database port (PostgreSQL=5432 default; MYSQL=3306 default)
+DBPORT=3306
+
+## database host
+DBHOST=localhost
+
+## database name (for ORACLE this is TNS name)
+DBNAME=opensips
+
+# database path used by dbtext, db_berkeley, or sqlite
+DB_PATH="/usr/local/etc/opensips/dbtext"
+
+## database read/write user
+DBRWUSER=opensips
+
+## password for database read/write user
+DBRWPW="opensipsrw"
+
+## engine type for the MySQL/MariaDB tabels (default InnoDB)
+MYSQL_ENGINE="MyISAM"
+
+## database super user (for ORACLE this is 'scheme-creator' user)
+DBROOTUSER="root"
+
+# user name column
+USERCOL="username"
+```
+
 - 运行`opensipsdbctl create`创建数据库
-- 手动运行`rtpproxy -F -l {ip} -s udp:${ip}:12221`
-- 或者修改`/etc/default/rtpproxy`文件中的CONTROL_SOCK="unix:/var/run/rtpproxy/rtpproxy.sock", 然后运行service rtpproxy start
+- 运行`service rtpproxy start`
 - 运行`opensipsctl start`
 - 受网络影响, 不同的网络有不同的Bug!!!
   - 学校有线网没法收到ACK
   - BUPT-Portal没有语音消息
-  - 4G可以正常
+  - 4G可以正常运行

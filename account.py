@@ -15,6 +15,32 @@ class Account(pj.Account):
         pj.Account.__init__(self)
         self.app = app
         self.cfg = pj.AccountConfig()
+    
+    def status(self):
+        status = '?'
+        if self.isValid():
+            ai = self.getInfo()
+            if ai.regLastErr:
+                status = self.app.ep.utilStrError(ai.regLastErr)
+            elif ai.regIsActive:
+                if ai.onlineStatus:
+                    if len(ai.onlineStatusText):
+                        status = ai.onlineStatusText
+                    else:
+                        status = "Online"
+                else:
+                    status = "Registered"
+            else:
+                if ai.regIsConfigured:
+                    if ai.regStatus/100 == 2:
+                        status = "Unregistered"
+                    else:
+                        status = ai.regStatusText
+                else:
+                    status = "Doesn't register"
+        else:
+            status = '- not created -'
+        return status
 
     def onIncomingCall(self, prm):
         self.app.incoming_call(prm)
@@ -36,54 +62,14 @@ class Account(pj.Account):
 
     def onRegState(self, prm):
         print('onRegState')
-        super().onRegState(prm)
-
-        # print(self.isValid())
-        # print(self.getInfo().regLastErr)
-        # print(self.getInfo().regIsActive)
-        # print(self.getInfo().onlineStatus)
-        # print(self.getInfo().onlineStatusText)
-        # print(self.getInfo().regIsConfigured)
-        # print(self.getInfo().regStatus)
-        # print(self.getInfo().regStatusText)
+        self.app.update_account()
+        
 
     def onRegStarted(self, prm):
         print('onRegStarted')
         super().onRegStarted(prm)
 
-        # print(self.isValid())
-        # print(self.getInfo().regLastErr)
-        # print(self.getInfo().regIsActive)
-        # print(self.getInfo().onlineStatus)
-        # print(self.getInfo().onlineStatusText)
-        # print(self.getInfo().regIsConfigured)
-        # print(self.getInfo().regStatus)
-        # print(self.getInfo().regStatusText)
-        # status = '?'
-        # if self.isValid():
-        #     acc_info = self.getInfo()
-        #     if acc_info.regLastErr:
-        #         status = self.app.ep.utilStrError(acc_info.regLastErr)
-        #     elif acc_info.regIsActive:
-        #         if acc_info.onlineStatus:
-        #             if len(acc_info.onlineStatusText):
-        #                 status = acc_info.onlineStatusText
-        #             else:
-        #                 status = "Online"
-        #         else:
-        #             status = "Registered"
-        #     else:
-        #         if acc_info.regIsConfigured:
-        #             if acc_info.regStatus/100 == 2:
-        #                 status = "Unregistered"
-        #             else:
-        #                 status = acc_info.regStatusText
-        #         else:
-        #             status = "Doesn't register"
-        # else:
-        #     status = '- not created -'
-        # self.
-
+        
     def onMwiInfo(self, prm):
         print('onMwiInfo')
         super().onMwiInfo(prm)

@@ -93,10 +93,10 @@ class Main(tk.Tk):
             # Initialize configuration of buddy
             bud_cfg = pj.BuddyConfig()
             bud_cfg.uri = 'sip:' + iid + '@' + self.domain
-            bud_cfg.subscribe = True
             # Create buddy
             bud.cfg = bud_cfg
             bud.create(self.acc, bud.cfg)
+            bud.subscribePresence(True)
             # Push into buddy_list
             self.buddy_list[iid] = bud
             self.update_buddy(bud)
@@ -104,17 +104,21 @@ class Main(tk.Tk):
         self.buddy.delete(0, 'end')
 
     def _delete_buddy(self, event):
-        for item in self.buddy_view.selection():
-            self.buddy_view.delete(item)
-            self.buddy_list.pop(item)
+        for key in self.buddy_view.selection():
+            self.buddy_view.delete(key)
+            self.buddy_list.pop(key)
 
     def update_buddy(self, bud):
         iid = bud.iid
         if iid in self.buddy_list:
-            self.buddy_view.item(iid, value=(iid, bud.status_text()))
+            self.buddy_view.item(iid, value=(iid, bud.status()))
         else:
             self.buddy_view.insert(
-                '', 'end', iid=iid, values=(iid, bud.status_text()))
+                '', 'end', iid=iid, values=(iid, bud.status()))
+
+    def update_account(self):
+        # TODO()
+        print(self.acc.status())
 
     def incoming_call(self, prm):
         call = Call(self.acc, call_id=prm.callId)
@@ -133,10 +137,10 @@ class Main(tk.Tk):
                 # Initialize configuration of buddy
                 bud_cfg = pj.BuddyConfig()
                 bud_cfg.uri = 'sip:' + iid + '@' + self.domain
-                bud_cfg.subscribe = True
                 # Create buddy
                 bud.cfg = bud_cfg
                 bud.create(self.acc, bud.cfg)
+                bud.subscribePresence(True)
                 # Push into buddy_list
                 self.buddy_list[iid] = bud
                 self.update_buddy(bud)
@@ -176,10 +180,20 @@ class Main(tk.Tk):
             # Set configuration
             self.acc.cfg = acc_cfg
             self.acc.create(self.acc.cfg)
+
+            ps = pj.PresenceStatus()
+            ps.status = pj.PJSUA_BUDDY_STATUS_ONLINE
+            self.acc.setOnlineStatus(ps)
+
             # Update title
             self.title(self.acc.cfg.idUri)
             # Get the uri of server
             self.domain = self.acc.cfg.regConfig.registrarUri.split(':')[1]
+            # Reset all
+            self.buddy_list = {}
+            self.chat_list = {}
+            for key in self.buddy_view.get_children():
+                self.buddy_view.delete(key)
         # If never login
         if self.acc is None:
             # Then exit
@@ -194,7 +208,7 @@ class Main(tk.Tk):
         """
         Important!!! Can't remove!!!
         """
-        if self.ep is not None:
+        if self.ep:
             self.ep.libHandleEvents(10)
             self.after(50, self._on_timer)
 
