@@ -114,18 +114,23 @@ class ChatDialog(tk.Toplevel):
     def is_connect(self):
         self.state = AudioState.CONNECT
         self.state_label['text'] = self.state.value
-        self.timer.Reset()
-        self.timer.Start()
+        self.timer.reset()
+        self.timer.start()
 
     def is_disconnect(self):
         self.state = AudioState.DISCONNECT
         self.state_label['text'] = self.state.value
-        self.timer.Stop()
+        self.timer.stop()
 
-    def is_holding(self):
+    def is_hold(self):
         self.state = AudioState.HOLD
         self.state_label['text'] = self.state.value
-        self.timer.Stop()
+        self.timer.stop()
+
+    def is_unhold(self):
+        self.state = AudioState.CONNECT
+        self.state_label['text'] = self.state.value
+        self.timer.start()
 
     def _send_message(self, event):
         msg = self.message.get()
@@ -152,7 +157,6 @@ class ChatDialog(tk.Toplevel):
             self.call.makeCall(self.bud.cfg.uri, call_prm)
 
     def receive_call(self, call):
-        # TODO(NO ACK RECEIVE)
         # Update call and set chat
         self.call = call
         self.call.chat = self
@@ -167,14 +171,14 @@ class ChatDialog(tk.Toplevel):
             if self.state == AudioState.CONNECT:
                 self.call.setHold(call_prm)
                 self.hold_button['text'] = 'UnHold'
-                self.is_holding()
+                self.is_hold()
             elif self.state == AudioState.HOLD:
                 # Important!!! Can't remove!!!
                 call_prm.opt.audioCount = 1
                 call_prm.opt.flag = pj.PJSUA_CALL_UNHOLD
                 self.call.reinvite(call_prm)
                 self.hold_button['text'] = 'Hold'
-                self.is_connect()
+                self.is_unhold()
         else:
             print('Call isn\'t initialized')
 
@@ -230,14 +234,14 @@ class StopWatch(tk.Frame):
         hseconds = int((elap - minutes * 60.0 - seconds) * 100)
         self.timestr.set('%02d:%02d:%02d' % (minutes, seconds, hseconds))
 
-    def Start(self):
+    def start(self):
         """ Start the stopwatch, ignore if running. """
         if not self._running:
             self._start = time.time() - self._elapsedtime
             self._update()
             self._running = 1
 
-    def Stop(self):
+    def stop(self):
         """ Stop the stopwatch, ignore if stopped. """
         if self._running:
             self.after_cancel(self._timer)
@@ -245,7 +249,7 @@ class StopWatch(tk.Frame):
             self._setTime(self._elapsedtime)
             self._running = 0
 
-    def Reset(self):
+    def reset(self):
         """ Reset the stopwatch. """
         self._start = time.time()
         self._elapsedtime = 0.0

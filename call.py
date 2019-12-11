@@ -25,12 +25,12 @@ class Call(pj.Call):
             self.chat.is_calling()
         elif ci.state == pj.PJSIP_INV_STATE_CONNECTING:
             print('PJSIP_INV_STATE_CONNECTING')
-            self.chat.is_connect()
         elif ci.state == pj.PJSIP_INV_STATE_DISCONNECTED:
             print('PJSIP_INV_STATE_DISCONNECTED')
             self.chat.is_disconnect()
         elif ci.state == pj.PJSIP_INV_STATE_CONFIRMED:
             print('PJSIP_INV_STATE_CONFIRMED')
+            self.chat.is_connect()
         elif ci.state == pj.PJSIP_INV_STATE_EARLY:
             print('PJSIP_INV_STATE_EARLY')
         elif ci.state == pj.PJSIP_INV_STATE_INCOMING:

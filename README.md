@@ -132,5 +132,10 @@ exten => 1002,n,Hangup
   - 添加`SIP_DOMAIN=${ip}`
   - 将数据库相关的注释去掉
 - 运行`opensipsdbctl create`创建数据库
-- 运行`rtpproxy -F -l {ip} -s udp:${ip}:12221`
+- 手动运行`rtpproxy -F -l {ip} -s udp:${ip}:12221`
+- 或者修改`/etc/default/rtpproxy`文件中的CONTROL_SOCK="unix:/var/run/rtpproxy/rtpproxy.sock", 然后运行service rtpproxy start
 - 运行`opensipsctl start`
+- 受网络影响, 不同的网络有不同的Bug!!!
+  - 学校有线网没法收到ACK
+  - BUPT-Portal没有语音消息
+  - 4G可以正常

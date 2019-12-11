@@ -34,7 +34,7 @@ class Main(tk.Tk):
         self.ep_cfg = pj.EpConfig()
         self.ep_cfg.uaConfig.threadCnt = 0
         self.ep_cfg.uaConfig.mainThreadOnly = True
-        self.ep_cfg.logConfig.level = 5
+        self.ep_cfg.logConfig.level = 1
 
         self.ep.libInit(self.ep_cfg)
 
