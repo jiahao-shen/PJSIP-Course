@@ -148,7 +148,7 @@ class Main(tk.Tk):
             if iid not in self.chat_list:
                 self.chat_list[iid] = ChatDialog(
                     self.acc, self.buddy_list[iid], self)
-
+            # Inform the corresponding chat
             self.chat_list[iid].receive_call(call)
         else:
             call.hangup(call_prm)
@@ -180,11 +180,10 @@ class Main(tk.Tk):
             # Set configuration
             self.acc.cfg = acc_cfg
             self.acc.create(self.acc.cfg)
-
+            # Set online status
             ps = pj.PresenceStatus()
             ps.status = pj.PJSUA_BUDDY_STATUS_ONLINE
             self.acc.setOnlineStatus(ps)
-
             # Update title
             self.title(self.acc.cfg.idUri)
             # Get the uri of server
@@ -195,7 +194,7 @@ class Main(tk.Tk):
             for key in self.buddy_view.get_children():
                 self.buddy_view.delete(key)
         # If never login
-        if self.acc is None:
+        if not self.acc:
             # Then exit
             self._exit()
 

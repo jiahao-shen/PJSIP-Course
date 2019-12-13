@@ -115,9 +115,13 @@ exten => 1002,n,Hangup
 - 多核编译`make menuconfig -j`
 - 选中附加模块
   - `db_mysql`
-  - `xcap`
   - `presence`
+  - `presence_mwi`
   - `presence_xml`
+  - `presence_dialoginfo`
+  - `xcap`
+  - `xcap-client`
+  - 
 - 选择`Compile And Install OpenSIPS`
 
 ## 配置文件
@@ -139,7 +143,7 @@ listen:tcp:${ip}:5060
 
 # rtpproxy module
 loadmodule "rtpproxy.so"
-modparam("rtpproxy", "rtpproxy_sock", "unix:/var/run/rtpproxy/rtpproxy.sock") 
+modparam("rtpproxy", "rtpproxy_sock", "udp:${ip}:12221")
 
 # presence module
 loadmodule "presence.so"
@@ -197,7 +201,7 @@ USERCOL="username"
 ```
 
 - 运行`opensipsdbctl create`创建数据库
-- 运行`service rtpproxy start`
+- 运行`rtpproxy -F -l {ip} -s udp:${ip}:12221 `
 - 运行`opensipsctl start`
 - 受网络影响, 不同的网络有不同的Bug!!!
   - 学校有线网没法收到ACK

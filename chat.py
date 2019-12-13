@@ -106,18 +106,18 @@ class ChatDialog(tk.Toplevel):
     def add_message(self, msg, flag):
         tk.Label(self.chat, text=time.strftime(
             '%H:%M:%S', time.localtime()), fg=COLOR_TIME).pack(anchor='center')
-        if flag == MessageState.SEND or MessageState.INFO:
-            content = tk.Frame(self.chat)
-            tk.Label(content, image=self.photo).pack(side=tk.RIGHT, anchor='n')
-            tk.Label(content, font=FONT_MESSAGE, text=msg, wraplength=200,
-                     justify='left', bg=COLOR_SEND_BUBBLE).pack(side=tk.RIGHT, ipadx=5, ipady=5)
-            content.pack(anchor='e')
-        elif flag == MessageState.RECEIVE:
+        if flag == MessageState.RECEIVE:
             content = tk.Frame(self.chat)
             tk.Label(content, image=self.photo).pack(side=tk.LEFT, anchor='n')
             tk.Label(content, font=FONT_MESSAGE, text=msg, wraplength=200, justify='left',
                      bg=COLOR_RECEIVE_BUBBLE).pack(side=tk.LEFT, ipadx=5, ipady=5)
             content.pack(anchor='w')
+        else:
+            content = tk.Frame(self.chat)
+            tk.Label(content, image=self.photo).pack(side=tk.RIGHT, anchor='n')
+            tk.Label(content, font=FONT_MESSAGE, text=msg, wraplength=200,
+                     justify='left', bg=COLOR_SEND_BUBBLE).pack(side=tk.RIGHT, ipadx=5, ipady=5)
+            content.pack(anchor='e')
 
         # Important!!! Can't remove!!!
         self.chat.update_idletasks()

@@ -10,7 +10,6 @@ from enum import Enum
 
 # SIP Configuration
 DEFAULT_DOMAIN = '27.102.107.237'
-# DEFAULT_DOMAIN = '47.107.165.248'
 
 
 # GUI Configuration
@@ -18,20 +17,24 @@ FONT_TITLE = ('Arial', 20, 'bold')
 FONT_CONTENT = ('Arial', 15, 'normal')
 FONT_MESSAGE = ('Arial', 20, 'normal')
 
+
 # Color
 COLOR_BACKGROUND = '#FDFDFD'
 COLOR_SEND_BUBBLE = '#D9F4FE'
 COLOR_RECEIVE_BUBBLE = '#F3F3F3'
 COLOR_TIME = '#CDCCCC'
-# Audio State
+
+
 class AudioState(Enum):
+    # Audio State
     CALLING = 'Calling...'
     CONNECT = 'Connect'
     DISCONNECT = 'Disconnect'
     HOLD = 'Holding...'
 
-# Message State
+
 class MessageState(Enum):
+    # Message State
     SEND = 'Send'
     RECEIVE = 'Receive'
     INFO = 'Info'
