@@ -9,7 +9,9 @@
 from enum import Enum
 
 # SIP Configuration
-DEFAULT_DOMAIN = '27.102.107.237'
+# DEFAULT_DOMAIN = '27.102.107.237'
+DEFAULT_DOMAIN = '10.210.63.101'
+DEFAULT_USERNAME = '1001'
 
 
 # GUI Configuration

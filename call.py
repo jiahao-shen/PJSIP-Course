@@ -21,29 +21,55 @@ class Call(pj.Call):
     def onCallState(self, prm):
         ci = self.getInfo()
         if ci.state == pj.PJSIP_INV_STATE_CALLING:
-            print('PJSIP_INV_STATE_CALLING')
+            # print('PJSIP_INV_STATE_CALLING')
             self.chat.is_calling()
         elif ci.state == pj.PJSIP_INV_STATE_CONNECTING:
-            print('PJSIP_INV_STATE_CONNECTING')
+            # print('PJSIP_INV_STATE_CONNECTING')
+            pass
         elif ci.state == pj.PJSIP_INV_STATE_DISCONNECTED:
-            print('PJSIP_INV_STATE_DISCONNECTED')
+            # print('PJSIP_INV_STATE_DISCONNECTED')
             self.chat.is_disconnect()
         elif ci.state == pj.PJSIP_INV_STATE_CONFIRMED:
-            print('PJSIP_INV_STATE_CONFIRMED')
+            # print('PJSIP_INV_STATE_CONFIRMED')
             self.chat.is_connect()
         elif ci.state == pj.PJSIP_INV_STATE_EARLY:
-            print('PJSIP_INV_STATE_EARLY')
+            # print('PJSIP_INV_STATE_EARLY')
+            pass
         elif ci.state == pj.PJSIP_INV_STATE_INCOMING:
-            print('PJSIP_INV_STATE_INCOMING')
+            # print('PJSIP_INV_STATE_INCOMING')
+            pass
         elif ci.state == pj.PJSIP_INV_STATE_NULL:
-            print('PJSIP_INV_STATE_NULL')
+            # print('PJSIP_INV_STATE_NULL')
+            pass
 
     def onCallMediaState(self, prm):
-        am = self.getAudioMedia(-1)
-        mgr = Endpoint.instance.audDevManager()
-        am.startTransmit(mgr.getPlaybackDevMedia())
-        mgr.getCaptureDevMedia().startTransmit(am)
+        # am = self.getAudioMedia(-1)
+        # mgr = Endpoint.instance.audDevManager()
+        # am.startTransmit(mgr.getPlaybackDevMedia())
+        # mgr.getCaptureDevMedia().startTransmit(am)
 
+        # Video test
+        ci = self.getInfo()
+        for mi in ci.media:
+            if mi.type == pj.PJMEDIA_TYPE_AUDIO:
+                am = self.getAudioMedia(mi.index)
+                mgr = Endpoint.instance.audDevManager()
+
+                mgr.getCaptureDevMedia().startTransmit(am)
+                am.startTransmit(mgr.getPlaybackDevMedia())
+            elif mi.type == pj.PJMEDIA_TYPE_VIDEO:
+                if mi.videoIncomingWindowId != pj.INVALID_ID:
+                    self.vid_win = pj.VideoWindow(mi.videoIncomingWindowId)
+                    self.vid_pre = pj.VideoPreview(mi.videoCapDev)
+                    print(mi.videoCapDev)
+
+                    self.vid_win.Show(True)
+
+                    # TODO(Later to handle the GUI)
+                    # self.vid_win.getInfo().hwnd 
+                else:
+                    print('fuck video')
+                
     def onInstantMessage(self, prm):
         return super().onInstantMessage(prm)
 

@@ -140,11 +140,13 @@ class ChatDialog(tk.Toplevel):
         self.add_message('Call Ended\nLast ' + self.timer.get(), MessageState.INFO)
 
     def is_hold(self):
+        self.hold_button['text'] = 'UnHold'
         self.state = AudioState.HOLD
         self.state_label['text'] = self.state.value
         self.timer.stop()
 
     def is_unhold(self):
+        self.hold_button['text'] = 'Hold'
         self.state = AudioState.CONNECT
         self.state_label['text'] = self.state.value
         self.timer.start()
@@ -170,6 +172,8 @@ class ChatDialog(tk.Toplevel):
             call_prm = pj.CallOpParam()
             # Important!!! Can't remove!!!
             call_prm.opt.audioCount = 1
+            # Video test
+            call_prm.opt.videoCount = 1
             # Make call
             self.call.makeCall(self.bud.cfg.uri, call_prm)
 
@@ -187,14 +191,12 @@ class ChatDialog(tk.Toplevel):
             call_prm = pj.CallOpParam()
             if self.state == AudioState.CONNECT:
                 self.call.setHold(call_prm)
-                self.hold_button['text'] = 'UnHold'
                 self.is_hold()
             elif self.state == AudioState.HOLD:
                 # Important!!! Can't remove!!!
                 call_prm.opt.audioCount = 1
                 call_prm.opt.flag = pj.PJSUA_CALL_UNHOLD
                 self.call.reinvite(call_prm)
-                self.hold_button['text'] = 'Hold'
                 self.is_unhold()
         else:
             print('Call isn\'t initialized')

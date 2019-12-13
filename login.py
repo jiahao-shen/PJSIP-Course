@@ -28,8 +28,8 @@ class LoginDialog(tk.Toplevel):
         Account Information
         """
         self.domain = tk.StringVar(value=DEFAULT_DOMAIN)
-        self.username = tk.StringVar(value='1001')
-        self.password = tk.StringVar(value='1001')
+        self.username = tk.StringVar(value=DEFAULT_USERNAME)
+        self.password = tk.StringVar(value=DEFAULT_USERNAME)
         self.is_ok = False
 
         """

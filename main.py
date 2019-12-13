@@ -34,7 +34,7 @@ class Main(tk.Tk):
         self.ep_cfg = pj.EpConfig()
         self.ep_cfg.uaConfig.threadCnt = 0
         self.ep_cfg.uaConfig.mainThreadOnly = True
-        self.ep_cfg.logConfig.level = 1
+        self.ep_cfg.logConfig.level = 3
 
         self.ep.libInit(self.ep_cfg)
 
@@ -179,11 +179,19 @@ class Main(tk.Tk):
             self.acc = Account(self)
             # Set configuration
             self.acc.cfg = acc_cfg
+
+            # Video test
+            self.acc.cfg.autoShowIncoming = True
+            self.acc.cfg.autoTransmitOutgoing = True
+            self.acc.cfg.defaultCaptureDevice = pj.PJMEDIA_VID_DEFAULT_CAPTURE_DEV
+            self.acc.cfg.defaultRenderDevice = pj.PJMEDIA_VID_DEFAULT_RENDER_DEV
+
             self.acc.create(self.acc.cfg)
             # Set online status
             ps = pj.PresenceStatus()
             ps.status = pj.PJSUA_BUDDY_STATUS_ONLINE
             self.acc.setOnlineStatus(ps)
+
             # Update title
             self.title(self.acc.cfg.idUri)
             # Get the uri of server
