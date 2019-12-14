@@ -32,9 +32,9 @@ class Main(tk.Tk):
         self.ep.libCreate()
 
         self.ep_cfg = pj.EpConfig()
-        self.ep_cfg.uaConfig.threadCnt = 0
-        self.ep_cfg.uaConfig.mainThreadOnly = True
-        self.ep_cfg.logConfig.level = 3
+        # self.ep_cfg.uaConfig.threadCnt = 0
+        # self.ep_cfg.uaConfig.mainThreadOnly = True
+        self.ep_cfg.logConfig.level = 1
 
         self.ep.libInit(self.ep_cfg)
 
@@ -80,7 +80,7 @@ class Main(tk.Tk):
 
         self._login()
 
-        self._on_timer()
+        # self._on_timer()
 
         self.mainloop()
 
@@ -179,13 +179,6 @@ class Main(tk.Tk):
             self.acc = Account(self)
             # Set configuration
             self.acc.cfg = acc_cfg
-
-            # Video test
-            self.acc.cfg.autoShowIncoming = True
-            self.acc.cfg.autoTransmitOutgoing = True
-            self.acc.cfg.defaultCaptureDevice = pj.PJMEDIA_VID_DEFAULT_CAPTURE_DEV
-            self.acc.cfg.defaultRenderDevice = pj.PJMEDIA_VID_DEFAULT_RENDER_DEV
-
             self.acc.create(self.acc.cfg)
             # Set online status
             ps = pj.PresenceStatus()
@@ -211,14 +204,14 @@ class Main(tk.Tk):
         self.ep = None
         self.destroy()
 
-    def _on_timer(self):
-        """
-        Important!!! Can't remove!!!
-        """
-        if self.ep:
-            self.ep.libHandleEvents(10)
-            self.after(50, self._on_timer)
+    # def _on_timer(self):
+    #     """
+    #     Important!!! Can't remove!!!
+    #     """
+    #     if self.ep:
+    #         self.ep.libHandleEvents(10)
+    #         self.after(50, self._on_timer)
 
 
 if __name__ == '__main__':
-    Main()
+    main = Main()

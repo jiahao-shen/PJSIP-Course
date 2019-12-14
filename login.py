@@ -85,6 +85,11 @@ class LoginDialog(tk.Toplevel):
         self.cfg.sipConfig.authCreds.append(pj.AuthCredInfo(
             'digest', '*', self.username.get(), pj.PJSIP_CRED_DATA_PLAIN_PASSWD, self.password.get()))
 
+        # Video support
+        self.cfg.videoConfig.autoTransmitOutgoing = True
+        self.cfg.videoConfig.defaultCaptureDevice = pj.PJMEDIA_VID_DEFAULT_CAPTURE_DEV
+        self.cfg.videoConfig.defaultRenderDevice = pj.PJMEDIA_VID_DEFAULT_RENDER_DEV
+
         self.is_ok = True
         self.destroy()
 

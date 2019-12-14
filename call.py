@@ -48,7 +48,6 @@ class Call(pj.Call):
         # am.startTransmit(mgr.getPlaybackDevMedia())
         # mgr.getCaptureDevMedia().startTransmit(am)
 
-        # Video test
         ci = self.getInfo()
         for mi in ci.media:
             if mi.type == pj.PJMEDIA_TYPE_AUDIO:
@@ -59,17 +58,13 @@ class Call(pj.Call):
                 am.startTransmit(mgr.getPlaybackDevMedia())
             elif mi.type == pj.PJMEDIA_TYPE_VIDEO:
                 if mi.videoIncomingWindowId != pj.INVALID_ID:
-                    self.vid_win = pj.VideoWindow(mi.videoIncomingWindowId)
-                    self.vid_pre = pj.VideoPreview(mi.videoCapDev)
-                    print(mi.videoCapDev)
+                    vid_win = pj.VideoWindow(mi.videoIncomingWindowId)
+                    vid_pre = pj.VideoPreview(mi.videoCapDev)
 
-                    self.vid_win.Show(True)
-
-                    # TODO(Later to handle the GUI)
-                    # self.vid_win.getInfo().hwnd 
+                    self.chat.show_video(vid_win, vid_pre)
                 else:
-                    print('fuck video')
-                
+                    print('Unkown Error')
+
     def onInstantMessage(self, prm):
         return super().onInstantMessage(prm)
 

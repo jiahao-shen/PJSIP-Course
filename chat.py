@@ -65,10 +65,16 @@ class ChatDialog(tk.Toplevel):
         tk.Button(self, text='Call', font=FONT_CONTENT, width=10,
                   command=self._make_call).grid(row=10, column=1, padx=2, pady=2)
 
+        # self.video_frame = tk.Frame(self, bg='red', width=200, height=200)
+        # self.video_frame.grid(row=0, column=3, rowspan=3,
+        #                       columnspan=3, padx=10, pady=10)
+        self.video = tk.Canvas(self, width=200, height=200, bg='red')
+        self.video.grid(row=0, column=3, rowspan=3,
+                        columnspan=3, padx=10, pady=10)
+
         # State Label
-        self.state_label = tk.Label(self, font=FONT_TITLE)
-        self.state_label.grid(
-            row=5, column=3, columnspan=3, padx=10, pady=10)
+        self.state_label = tk.Label(self, font=FONT_TITLE, text='No connect')
+        self.state_label.grid(row=5, column=3, columnspan=3, padx=10, pady=10)
 
         # Timer Label
         self.timer = StopWatch(self)
@@ -123,6 +129,16 @@ class ChatDialog(tk.Toplevel):
         self.chat.update_idletasks()
         self.canvas.yview_moveto(1)
 
+    def show_video(self, vid_win, vid_pre):
+        vid_win.Show(True)
+        # pre_prm = pj.VideoPreviewOpParam()
+        # vid_pre.start(pre_prm)
+
+        # print(type(vid_win.getInfo().winHandle))
+        # print(vid_win.getInfo().winHandle)
+        # print(type(vid_win.getInfo().winHandle.handle))
+        # print(vid_win.getInfo().winHandle.handle)
+
     def is_calling(self):
         self.state = AudioState.CALLING
         self.state_label['text'] = self.state.value
@@ -137,7 +153,8 @@ class ChatDialog(tk.Toplevel):
         self.state = AudioState.DISCONNECT
         self.state_label['text'] = self.state.value
         self.timer.stop()
-        self.add_message('Call Ended\nLast ' + self.timer.get(), MessageState.INFO)
+        self.add_message('Call Ended\nLast ' +
+                         self.timer.get(), MessageState.INFO)
 
     def is_hold(self):
         self.hold_button['text'] = 'UnHold'
@@ -170,9 +187,9 @@ class ChatDialog(tk.Toplevel):
             self.call = Call(self.acc, self.bud.cfg.uri, self)
             # Create paramter
             call_prm = pj.CallOpParam()
-            # Important!!! Can't remove!!!
+            # Enable audio
             call_prm.opt.audioCount = 1
-            # Video test
+            # Enable video
             call_prm.opt.videoCount = 1
             # Make call
             self.call.makeCall(self.bud.cfg.uri, call_prm)
@@ -210,7 +227,6 @@ class ChatDialog(tk.Toplevel):
     def _rx_volume(self, event):
         am = self.call.getAudioMedia(-1)
         am.adjustRxLevel(self.rx_scale.get() / 10.0)
-        
 
     def _tx_volume(self, event):
         am = self.call.getAudioMedia(-1)
@@ -286,6 +302,7 @@ class StopWatch(tk.Frame):
 
     def get(self):
         return self.timestr.get()
+
 
 def test():
     root = tk.Tk()

@@ -1,16 +1,22 @@
-import tkinter as tk
+from win32gui import *
+import win32con
+import pywintypes
+from tkinter import *
 
+root=Tk()
 
-def on_change(event):
-    print(event.widget.get())
-    event.widget.delete(0, tk.END)
+hwnd = pywintypes.HANDLE(int(root.frame(), 16))
+hdc=GetDC(hwnd)
 
+def callback(event):
+    root.update()
 
-root = tk.Tk()
+    hbrush=GetStockObject(win32con.NULL_BRUSH)
+    oldbrush=SelectObject(hdc,hbrush)
+    Rectangle(hdc,50,50,100,100)
 
-e = tk.Entry(root)
-e.pack()
-# Calling on_change when you press the return key
-e.bind("<Return>", on_change)
+root.geometry("400x400")
+
+root.bind("<Configure>",callback)
 
 root.mainloop()
