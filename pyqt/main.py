@@ -23,19 +23,19 @@ class Main(QWidget):
         """
         Initialize PJSUA2
         """
-        self.ep = Endpoint()
-        self.ep.libCreate()
+        # self.ep = Endpoint()
+        # self.ep.libCreate()
 
-        self.ep_cfg = pj.EpConfig()
-        # self.ep_cfg.uaConfig.threadCnt = 0
-        # self.ep_cfg.uaConfig.mainThreadOnly = True
-        self.ep_cfg.logConfig.level = 0
+        # self.ep_cfg = pj.EpConfig()
+        # # self.ep_cfg.uaConfig.threadCnt = 0
+        # # self.ep_cfg.uaConfig.mainThreadOnly = True
+        # self.ep_cfg.logConfig.level = 0
 
-        self.ep.libInit(self.ep_cfg)
+        # self.ep.libInit(self.ep_cfg)
 
-        self.sip_cfg = pj.TransportConfig()
-        self.ep.transportCreate(pj.PJSIP_TRANSPORT_UDP, self.sip_cfg)
-        self.ep.libStart()
+        # self.sip_cfg = pj.TransportConfig()
+        # self.ep.transportCreate(pj.PJSIP_TRANSPORT_UDP, self.sip_cfg)
+        # self.ep.libStart()
 
         # """
         # Initialize Account
@@ -55,9 +55,9 @@ class Main(QWidget):
         self.grid = QGridLayout()
         self.setLayout(self.grid)
 
-        self.bud_edit = QLineEdit()
-        self.bud_edit.returnPressed.connect(self._add_buddy)
-        self.grid.addWidget(self.bud_edit, 0, 0, 1, 3)
+        self.buddy = QLineEdit()
+        self.buddy.returnPressed.connect(self._add_buddy)
+        self.grid.addWidget(self.buddy, 0, 0, 1, 3)
 
         self.bud_table = QTableWidget()
         self.bud_table.setColumnCount(2)
@@ -81,9 +81,9 @@ class Main(QWidget):
 
     def _add_buddy(self):
         self.bud_table.insertRow(self.bud_table.rowCount())
-        self.bud_table.setItem(self.bud_table.rowCount() - 1, 0, QTableWidgetItem(self.bud_edit.text()))
+        self.bud_table.setItem(self.bud_table.rowCount() - 1, 0, QTableWidgetItem(self.buddy.text()))
 
-        self.bud_edit.setText('')
+        self.buddy.setText('')
 
     def _delete_buddy(self):
         pass
@@ -114,9 +114,10 @@ class Main(QWidget):
         # Wait for response
 
     def _exit(self):
-        self.ep.libDestroy()
-        self.ep = None
-        self.close()
+        # self.ep.libDestroy()
+        # self.ep = None
+        # self.close()
+        pass
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
