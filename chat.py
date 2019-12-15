@@ -29,6 +29,8 @@ class ChatDialog(tk.Toplevel):
         self.app = app
 
         self.call = None
+        self.vid_win = None
+        self.vid_pre = None
         self.state = AudioState.DISCONNECT
 
         """
@@ -64,13 +66,6 @@ class ChatDialog(tk.Toplevel):
         # Call Button
         tk.Button(self, text='Call', font=FONT_CONTENT, width=10,
                   command=self._make_call).grid(row=10, column=1, padx=2, pady=2)
-
-        # self.video_frame = tk.Frame(self, bg='red', width=200, height=200)
-        # self.video_frame.grid(row=0, column=3, rowspan=3,
-        #                       columnspan=3, padx=10, pady=10)
-        self.video = tk.Canvas(self, width=200, height=200, bg='red')
-        self.video.grid(row=0, column=3, rowspan=3,
-                        columnspan=3, padx=10, pady=10)
 
         # State Label
         self.state_label = tk.Label(self, font=FONT_TITLE, text='No connect')
@@ -108,6 +103,7 @@ class ChatDialog(tk.Toplevel):
                   command=self._hang_up).grid(row=9, column=5, padx=10, pady=10)
 
         self.protocol('WM_DELETE_WINDOW', self._exit)
+        self.bind('<Configure>', self._resize)
 
     def add_message(self, msg, flag):
         tk.Label(self.chat, text=time.strftime(
@@ -130,14 +126,35 @@ class ChatDialog(tk.Toplevel):
         self.canvas.yview_moveto(1)
 
     def show_video(self, vid_win, vid_pre):
-        vid_win.Show(True)
-        # pre_prm = pj.VideoPreviewOpParam()
-        # vid_pre.start(pre_prm)
+        self.vid_win = vid_win
+        self.vid_pre = vid_pre
 
-        # print(type(vid_win.getInfo().winHandle))
-        # print(vid_win.getInfo().winHandle)
-        # print(type(vid_win.getInfo().winHandle.handle))
-        # print(vid_win.getInfo().winHandle.handle)
+        # Set video position
+        pos = pj.MediaCoordinate()
+        pos.x = self.winfo_rootx() + self.winfo_width()
+        pos.y = self.winfo_rooty()
+        self.vid_win.setPos(pos)
+        # Set video size
+        size = pj.MediaSize()
+        size.w = int(self.winfo_height() * 0.8)
+        size.h = int(self.winfo_height() * 0.8)
+        self.vid_win.setSize(size)
+        # Show video
+        self.vid_win.Show(True)
+        
+        # Show preview
+        pre_prm = pj.VideoPreviewOpParam()
+        self.vid_pre.start(pre_prm)
+        # Set preview position
+        pos = pj.MediaCoordinate()
+        pos.x = self.winfo_rootx() + self.winfo_width()
+        pos.y = self.winfo_rooty() + int(self.winfo_height() * 0.8)
+        self.vid_pre.getVideoWindow().setPos(pos)
+        # Set preview size
+        size = pj.MediaSize()
+        size.w = int(self.winfo_height() * 0.2)
+        size.h = int(self.winfo_height() * 0.2)
+        self.vid_pre.getVideoWindow().setSize(size)
 
     def is_calling(self):
         self.state = AudioState.CALLING
@@ -150,6 +167,10 @@ class ChatDialog(tk.Toplevel):
         self.timer.start()
 
     def is_disconnect(self):
+        self.vid_win = None
+        self.vid_pre.stop()
+        self.vid_pre = None
+
         self.state = AudioState.DISCONNECT
         self.state_label['text'] = self.state.value
         self.timer.stop()
@@ -239,6 +260,20 @@ class ChatDialog(tk.Toplevel):
     def _chat_resize(self, event):
         # Important!!! Can't remove!!!
         self.canvas.config(scrollregion=self.canvas.bbox('all'))
+
+    def _resize(self, event):
+        if self.vid_win and self.vid_pre:
+            # Set video position
+            pos = pj.MediaCoordinate()
+            pos.x = self.winfo_rootx() + self.winfo_width()
+            pos.y = self.winfo_rooty()
+            self.vid_win.setPos(pos)
+
+            # Set preview position
+            pos = pj.MediaCoordinate()
+            pos.x = self.winfo_rootx() + self.winfo_width()
+            pos.y = self.winfo_rooty() + int(self.winfo_height() * 0.8)
+            self.vid_pre.getVideoWindow().setPos(pos)
 
     def _exit(self):
         try:
