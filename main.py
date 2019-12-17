@@ -14,7 +14,7 @@ from call import Call
 from tkinter import ttk
 from buddy import Buddy
 from account import Account
-from chat import ChatDialog
+from chat import Chat
 from endpoint import Endpoint
 from login import Login
 from tkinter import messagebox as msg
@@ -146,7 +146,7 @@ class Main(tk.Tk):
                 self.update_buddy(bud)
             # If not exist current chat dialog, then create
             if iid not in self.chat_list:
-                self.chat_list[iid] = ChatDialog(
+                self.chat_list[iid] = Chat(
                     self.acc, self.buddy_list[iid], self)
             # Inform the corresponding chat
             self.chat_list[iid].receive_call(call)
@@ -162,7 +162,7 @@ class Main(tk.Tk):
 
     def _create_chat(self, event):
         for iid in self.buddy_view.selection():
-            self.chat_list[iid] = ChatDialog(
+            self.chat_list[iid] = Chat(
                 self.acc, self.buddy_list[iid], self)
 
     def delete_chat(self, iid):

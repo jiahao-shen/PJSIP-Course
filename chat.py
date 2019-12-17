@@ -20,7 +20,7 @@ from account import Account
 from endpoint import Endpoint
 
 
-class ChatDialog(tk.Toplevel):
+class Chat(tk.Toplevel):
 
     def __init__(self, acc, bud, app):
         tk.Toplevel.__init__(self)
@@ -347,7 +347,7 @@ def test():
     bud_cfg = pj.BuddyConfig()
     bud_cfg.uri = 'sip:1002@27.102.107.237'
 
-    ChatDialog(acc, bud, root)
+    Chat(acc, bud, root)
     root.mainloop()
 
 
