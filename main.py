@@ -16,7 +16,7 @@ from buddy import Buddy
 from account import Account
 from chat import ChatDialog
 from endpoint import Endpoint
-from login import LoginDialog
+from login import Login
 from tkinter import messagebox as msg
 
 
@@ -172,7 +172,7 @@ class Main(tk.Tk):
         # Initialize configuration of account
         acc_cfg = pj.AccountConfig()
         # Create LoginDialog
-        dlg = LoginDialog(self, acc_cfg)
+        dlg = Login(self, acc_cfg)
         # Wait for response
         if dlg.do_modal():
             # Initialize account

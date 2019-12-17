@@ -16,7 +16,7 @@ from endpoint import *
 from tkinter import messagebox as msg
 
 
-class LoginDialog(tk.Toplevel):
+class Login(tk.Toplevel):
 
     def __init__(self, parent, cfg):
         tk.Toplevel.__init__(self, parent)
