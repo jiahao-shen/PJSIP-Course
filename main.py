@@ -38,8 +38,8 @@ class Main(tk.Tk):
 
         self.ep.libInit(self.ep_cfg)
 
-        self.sip_cfg = pj.TransportConfig()
-        self.ep.transportCreate(pj.PJSIP_TRANSPORT_UDP, self.sip_cfg)
+        self.ts_cfg = pj.TransportConfig()
+        self.ep.transportCreate(pj.PJSIP_TRANSPORT_UDP, self.ts_cfg)
         self.ep.libStart()
 
         """
