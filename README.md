@@ -102,7 +102,7 @@
     exten => 1002,n,Hangup
     ```
 
-- **注意**: 由于我的阿里云服务器是公网IP, 因此如要修改一下NAT配置。虽然asterisk使用SIP协议建立连接, 但是语音数据包走的还是RTP协议, 因此需要将阿里云的SIP(默认:5060)端口和RTP(默认:10000~20000)端口都开启, 否则会没油声音。
+- **注意**: 由于我的阿里云服务器是公网IP, 因此如要修改一下NAT配置。虽然asterisk使用SIP协议建立连接, 但是语音数据包走的还是RTP协议, 因此需要将阿里云的SIP(默认:5060)端口和RTP(默认:10000~20000)端口都开启, 否则会没有声音。
 
 
 # OpenSips
@@ -116,8 +116,8 @@
 - `apt install libxml2-dev`
 - `apt install mysql-server`
 - `apt install libmysqlclient-dev` 
-- `apt-get install libncurses5-dev`
-- `apt-get install libcurl4-gnutls-dev`
+- `apt install libncurses5-dev`
+- `apt install libcurl4-gnutls-dev`
   
 
 ## 编译安装
@@ -213,7 +213,7 @@
     ```
 
 - 运行`opensipsdbctl create`创建数据库
-- 运行`rtpproxy -F -l {ip} -s udp:${ip}:12221 `
+- 运行`rtpproxy -F -l {ip} -s udp:${ip}:12221`
 - 运行`opensipsctl start`
 
 
