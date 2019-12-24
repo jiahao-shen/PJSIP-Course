@@ -167,9 +167,11 @@ class Chat(tk.Toplevel):
         self.timer.start()
 
     def is_disconnect(self):
-        self.vid_win = None
-        self.vid_pre.stop()
-        self.vid_pre = None
+        if self.vid_win:
+            self.vid_win = None
+        if self.vid_pre:
+            self.vid_pre.stop()
+            self.vid_pre = None
 
         self.state = AudioState.DISCONNECT
         self.state_label['text'] = self.state.value
