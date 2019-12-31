@@ -6,7 +6,8 @@
 @time: 2019-11-27 21:36:37
 @blog: https://jiahaoplus.com
 """
-import pjsua2 as pj 
+import pjsua2 as pj
+
 
 class Buddy(pj.Buddy):
     def __init__(self, app, iid):

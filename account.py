@@ -10,12 +10,13 @@ import pjsua2 as pj
 
 from call import Call
 
+
 class Account(pj.Account):
     def __init__(self, app):
         pj.Account.__init__(self)
         self.app = app
         self.cfg = pj.AccountConfig()
-    
+
     def status(self):
         status = '?'
         if self.isValid():
@@ -32,7 +33,7 @@ class Account(pj.Account):
                     status = "Registered"
             else:
                 if ai.regIsConfigured:
-                    if ai.regStatus/100 == 2:
+                    if ai.regStatus / 100 == 2:
                         status = "Unregistered"
                     else:
                         status = ai.regStatusText
@@ -63,13 +64,11 @@ class Account(pj.Account):
     def onRegState(self, prm):
         print('onRegState')
         self.app.update_account()
-        
 
     def onRegStarted(self, prm):
         print('onRegStarted')
         super().onRegStarted(prm)
 
-        
     def onMwiInfo(self, prm):
         print('onMwiInfo')
         super().onMwiInfo(prm)
