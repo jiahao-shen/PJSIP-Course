@@ -106,6 +106,7 @@ class Chat(tk.Toplevel):
         self.bind('<Configure>', self._resize)
 
     def add_message(self, msg, flag):
+        msg = msg.replace('\n', '')
         tk.Label(self.chat, text=time.strftime(
             '%H:%M:%S', time.localtime()), fg=COLOR_TIME).pack(anchor='center')
         if flag == MessageState.RECEIVE:
