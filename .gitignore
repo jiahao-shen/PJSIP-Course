@@ -7,6 +7,5 @@ __pycache__/*
 *.js
 *.pyc
 tempCodeRunnerFile.py
-pjproject/*
 test.*
 pyqt/*
